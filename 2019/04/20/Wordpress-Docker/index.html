@@ -244,7 +244,7 @@
 
     
         <meta property="article:published_time" content="Sat Apr 20 2019 12:10:34 GMT+0800">
-        <meta property="article:modified_time" content="Sat Apr 20 2019 14:19:05 GMT+0800">
+        <meta property="article:modified_time" content="Sat Apr 20 2019 23:04:33 GMT+0800">
     
 
     <!-- The Twitter Card protocol -->
@@ -267,7 +267,7 @@
     "mainEntityOfPage": "http://TheScenery.github.io/2019/04/20/Wordpress-Docker/index.html",
     "headline": "Wordpress-Docker",
     "datePublished": "Sat Apr 20 2019 12:10:34 GMT+0800",
-    "dateModified": "Sat Apr 20 2019 14:19:05 GMT+0800",
+    "dateModified": "Sat Apr 20 2019 23:04:33 GMT+0800",
     "author": {
         "@type": "Person",
         "name": "Wenbin Liu",
@@ -350,7 +350,7 @@
     </button>
 
     <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
-        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Mysql的安装"><span class="post-toc-number">1.</span> <span class="post-toc-text">Mysql的安装</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Wordpress的安装"><span class="post-toc-number">2.</span> <span class="post-toc-text">Wordpress的安装</span></a></li></ol>
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#创建网络"><span class="post-toc-number">1.</span> <span class="post-toc-text">创建网络</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Mysql的安装"><span class="post-toc-number">2.</span> <span class="post-toc-text">Mysql的安装</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Wordpress的安装"><span class="post-toc-number">3.</span> <span class="post-toc-text">Wordpress的安装</span></a></li></ol>
     </ul>
     
 
@@ -490,13 +490,17 @@
 <li>安装mysql</li>
 <li>安装Wordpress</li>
 </ol>
+<h2 id="创建网络"><a href="#创建网络" class="headerlink" title="创建网络"></a>创建网络</h2><p>为了让Wordpress和mysql两个container在同一个网络里方便通信</p>
+<pre><code class="shell">docker network create my-net
+</code></pre>
 <h2 id="Mysql的安装"><a href="#Mysql的安装" class="headerlink" title="Mysql的安装"></a>Mysql的安装</h2><pre><code class="shell"># 获取mysql镜像到本地， 不适用最新版是因为认证方式有问题
 docker pull mysql：5.7
 # 使用上一步获取的镜像 mysql 启动一个容器
 #   --name 容器名称
 #   --v 数据映射。 将mysql的数据存储在宿主机的 /var/lib/mysql-datadir
-#   --e, 设置环境变量，这里主要配置了mysql默认的root用户密码
-docker run --name wordpress-mysql -v /var/lib/mysql-datadir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mwordpressmysql -d mysql:5.7
+#   --e, 设置环境变量，这里主要配置了mysql默认的root用户密码， 并且给Wordpress设置了一套DB的用户信息
+#  --network 配置处于那个网络中
+docker run --name mysql --network=my-net -v /var/lib/mysql-datadir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=wordpressdb -e MYSQL_USER=wordpressuser -e MYSQL_PASSWORD=password -d mysql:5.7
 </code></pre>
 <p>详细的配置情况可以参照官方文档<a href="https://hub.docker.com/_/mysql" target="_blank" rel="noopener">docker mysql</a><br>使用<code>docker ps</code>查看container的运行情况，如下图，则一个mysql的container已经可以使用了。<br><img src="/images/wordpress-docker/docker-mysql-success.png" alt="mysql-sucess"></p>
 <h2 id="Wordpress的安装"><a href="#Wordpress的安装" class="headerlink" title="Wordpress的安装"></a>Wordpress的安装</h2><pre><code class="shell"># 获取最新的Wordpress镜像
@@ -504,7 +508,8 @@ docker pull wordpress
 # 创建Wordpress容器
 # 参数和上面相似的就不解释了
 # --link docker 用来连接两个容器的，详细请参见官方文档
-docker run --name wordpress -d -p 80:80 --link wordpress-mysql:mysql -v /root/wordpress-html wordpress
+# 环境变量的DB信息，使用上一步创建mysql时生成的进行配置
+docker run --name worepress --network=my-net -v /var/lib/wordpress-datadir:/root/wordpress-html -e WORDPRESS_DB_HOST=mysql -e WORDPRESS_DB_USER=wordpressuser -e WORDPRESS_DB_PASSWORD=password -e WORDPRESS_DB_NAME=wordpressdb -p 80:80 -d wordpress
 </code></pre>
 <p>访问主机IP，看到Wordpress的安装界面即为成功。<br><img src="/images/wordpress-docker/wordpressSuccess.png" alt="wordpress-sucess"></p>
 
