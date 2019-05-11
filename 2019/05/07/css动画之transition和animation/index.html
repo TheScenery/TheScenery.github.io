@@ -43,7 +43,7 @@
     
     <title>
         
-            学习理解Redux Middleware | 
+            css动画之transition和animation | 
         
         Wenbin Liu&#39;s Blog
     </title>
@@ -54,7 +54,7 @@
 
     <meta name="format-detection" content="telephone=no">
     <meta name="description" itemprop="description" content>
-    <meta name="keywords" content=",Redux, Middleware">
+    <meta name="keywords" content>
     <meta name="theme-color" content="#0097A7">
 
     <!-- Disable Fucking Bloody Baidu Tranformation -->
@@ -220,7 +220,7 @@
     <!-- WebAPP Icons -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Wenbin Liu&#39;s Blog">
-    <meta name="msapplication-starturl" content="http://TheScenery.github.io/2018/05/27/redux-middleware/">
+    <meta name="msapplication-starturl" content="http://TheScenery.github.io/2019/05/07/css动画之transition和animation/">
     <meta name="msapplication-navbutton-color" content="#0097A7">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Wenbin Liu&#39;s Blog">
@@ -235,16 +235,16 @@
     
 
     <!-- The Open Graph protocol -->
-    <meta property="og:url" content="http://TheScenery.github.io/2018/05/27/redux-middleware/">
+    <meta property="og:url" content="http://TheScenery.github.io/2019/05/07/css动画之transition和animation/">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="学习理解Redux Middleware | Wenbin Liu&#39;s Blog">
+    <meta property="og:title" content="css动画之transition和animation | Wenbin Liu&#39;s Blog">
     <meta property="og:image" content="/img/favicon.jpg">
     <meta property="og:description" content>
-    <meta property="og:article:tag" content="Redux, Middleware"> 
+    
 
     
-        <meta property="article:published_time" content="Sun May 27 2018 12:33:20 GMT+0800">
-        <meta property="article:modified_time" content="Tue Apr 16 2019 22:05:00 GMT+0800">
+        <meta property="article:published_time" content="Tue May 07 2019 22:00:03 GMT+0800">
+        <meta property="article:modified_time" content="Sat May 11 2019 14:04:33 GMT+0800">
     
 
     <!-- The Twitter Card protocol -->
@@ -252,7 +252,7 @@
 
     <!-- Add canonical link for SEO -->
     
-        <link rel="canonical" href="http://TheScenery.github.io/2018/05/27/redux-middleware/index.html">
+        <link rel="canonical" href="http://TheScenery.github.io/2019/05/07/css动画之transition和animation/index.html">
     
 
     <!-- Structured-data for SEO -->
@@ -264,10 +264,10 @@
 {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "mainEntityOfPage": "http://TheScenery.github.io/2018/05/27/redux-middleware/index.html",
-    "headline": "学习理解Redux Middleware",
-    "datePublished": "Sun May 27 2018 12:33:20 GMT+0800",
-    "dateModified": "Tue Apr 16 2019 22:05:00 GMT+0800",
+    "mainEntityOfPage": "http://TheScenery.github.io/2019/05/07/css动画之transition和animation/index.html",
+    "headline": "css动画之transition和animation",
+    "datePublished": "Tue May 07 2019 22:00:03 GMT+0800",
+    "dateModified": "Sat May 11 2019 14:04:33 GMT+0800",
     "author": {
         "@type": "Person",
         "name": "Wenbin Liu",
@@ -285,7 +285,7 @@
             "url": "/img/favicon.jpg"
         }
     },
-    "keywords": ",Redux, Middleware",
+    "keywords": "",
     "description": "",
 }
 </script>
@@ -345,6 +345,14 @@
     <!-- Left aligned menu below button -->
     
     
+    <button id="post-toc-trigger-btn" class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">format_list_numbered</i>
+    </button>
+
+    <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#transition-使用方法"><span class="post-toc-number">1.</span> <span class="post-toc-text">transition 使用方法</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#animation-使用方法"><span class="post-toc-number">2.</span> <span class="post-toc-text">animation 使用方法</span></a></li></ol>
+    </ul>
+    
 
 
 
@@ -374,7 +382,7 @@
         
     
             <p class="article-headline-p">
-                学习理解Redux Middleware
+                css动画之transition和animation
             </p>
         </div>
 
@@ -393,7 +401,7 @@
     <!-- Author Name & Date -->
     <div>
         <strong>Wenbin Liu</strong>
-        <span>5月 27, 2018</span>
+        <span>5月 07, 2019</span>
     </div>
 
     <div class="section-spacer"></div>
@@ -411,15 +419,6 @@
 
     <!-- Tags (bookmark) -->
     
-    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-        <i class="material-icons" role="presentation">bookmark</i>
-        <span class="visuallyhidden">bookmark</span>
-    </button>
-    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
-        <li class="mdl-menu__item">
-        <a class="post_tag-link" href="/tags/Redux-Middleware/">Redux, Middleware</a>
-    </li></ul>
-    
 
     <!-- Share -->
     
@@ -434,7 +433,7 @@
 
     <!-- Share Weibo -->
     
-        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=学习理解Redux Middleware&url=http://TheScenery.github.io/2018/05/27/redux-middleware/index.html&pic=http://TheScenery.github.io/img/favicon.jpg&searchPic=false&style=simple" target="_blank">
+        <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=css动画之transition和animation&url=http://TheScenery.github.io/2019/05/07/css动画之transition和animation/index.html&pic=http://TheScenery.github.io/img/favicon.jpg&searchPic=false&style=simple" target="_blank">
             <li class="mdl-menu__item">
                 分享到微博
             </li>
@@ -443,7 +442,7 @@
 
     <!-- Share Twitter -->
     
-        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=学习理解Redux Middleware&url=http://TheScenery.github.io/2018/05/27/redux-middleware/index.html&via=Wenbin Liu" target="_blank">
+        <a class="post_share-link" href="https://twitter.com/intent/tweet?text=css动画之transition和animation&url=http://TheScenery.github.io/2019/05/07/css动画之transition和animation/index.html&via=Wenbin Liu" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Twitter
             </li>
@@ -452,7 +451,7 @@
 
     <!-- Share Facebook -->
     
-        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://TheScenery.github.io/2018/05/27/redux-middleware/index.html" target="_blank">
+        <a class="post_share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://TheScenery.github.io/2019/05/07/css动画之transition和animation/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Facebook
             </li>
@@ -461,7 +460,7 @@
 
     <!-- Share Google+ -->
     
-        <a class="post_share-link" href="https://plus.google.com/share?url=http://TheScenery.github.io/2018/05/27/redux-middleware/index.html" target="_blank">
+        <a class="post_share-link" href="https://plus.google.com/share?url=http://TheScenery.github.io/2019/05/07/css动画之transition和animation/index.html" target="_blank">
             <li class="mdl-menu__item">
                 分享到 Google+
             </li>
@@ -486,134 +485,91 @@
                 <!-- Post Content -->
                 <div id="post-content" class="mdl-color-text--grey-700 mdl-card__supporting-text fade out">
     
-        <p>Redux中的middleware其实就像是给你提供一个在action发出到实际reducer执行之前处理一些事情的机会。可以允许我们添加自己的逻辑在这段当中。<b>它提供的是位于 action 被发起之后，到达 reducer 之前的扩展点。</b></p>
-<p>加入middleware后，整个数据的流动如下图所示：<img src="/images/reduxMiddleware/reduxmiddleware.png" alt="middleware-data-flow"></p>
-<p>举个简单的例子，我们使用middleware将每次action的执行详细信息都打出来。就用官方demo中的todoApp来举例，我们先实现一个简单的reducer用来添加一个todo:</p>
-<pre><code class="javascript">    const todoApp = (state = {todo: []}, action) =&gt; {
-        if (action.type === &#39;addTodo&#39;) {
-            state.todo = [...state.todo, action.value]
-        }
-        return state
+        <p>transition和animation是两个在css中主要用来处理动画的属性，今天用到了，将使用过程中的一些疑惑和问题记录在这里。</p>
+<h2 id="transition-使用方法"><a href="#transition-使用方法" class="headerlink" title="transition 使用方法"></a>transition 使用方法</h2><pre><code class="css">transition: property duration timing-function delay;
+/*
+    property 过渡效果变化的属性，即这个属性的变化是一个过度效果
+    duration 这个过度效果持续的时间
+    timing-function 变化速度的时间函数
+    delay 延迟多久之后这个效果才开始发生变化
+*/
+
+// 还可以分开为四个属性单独设置
+transition-property
+transition-duration // 默认值0
+transition-timing-function // 默认值 ease
+/* 
+    一般都会用一些内置的时间函数
+    transition-timing-function: ease
+    transition-timing-function: ease-in
+    transition-timing-function: ease-out
+    transition-timing-function: ease-in-out
+    transition-timing-function: linear
+    transition-timing-function: cubic-bezier(0.1, 0.7, 1.0, 0.1)
+    transition-timing-function: step-start
+    transition-timing-function: step-end
+    transition-timing-function: steps(4, end)
+
+    transition-timing-function: ease, step-start, cubic-bezier(0.1, 0.7, 1.0, 0.1)
+
+    transition-timing-function: inherit 
+*/
+transition-delay // 默认值0
+</code></pre>
+<pre><code>一些小问题
+1. 那么问题来了，什么时候会触发这个效果呢？  
+设置的property的发生变化则触发这个效果。
+2. 发生的变化必须是确定的状态，才会触发。 
+比如height变为fitContent 则不会触发。遇到这种情况，可以是一个max-height来进行代替，将max-height设置为一个fitContent永远达不到的值，就可以用来模模拟自适应高度的变化了。
+</code></pre><p><a href="https://jsfiddle.net/TheScenery/fmwqy4pr/24/" target="_blank" rel="noopener">Height Demo</a></p>
+<h2 id="animation-使用方法"><a href="#animation-使用方法" class="headerlink" title="animation 使用方法"></a>animation 使用方法</h2><pre><code class="css">animation: name duration timing-function delay iteration-count direction;
+// 同样也可以每个都单独设置
+animation-name // 规定需要绑定到选择器的 keyframe 名称
+animation-duration // 规定完成动画所花费的时间，以秒或毫秒计，默认0，所以省略这一项往往会没有动画效果
+animation-timing-function // 规定动画的速度曲线
+animation-delay // 规定在动画开始之前的延迟
+animation-iteration-count // 规定动画应该播放的次数,可以设置为无数次 infinite
+animation-direction // 规定是否应该轮流反向播放动画， 可以设置一些反方向什么的。
+
+
+
+// 特殊的
+animation-fill-mode //动画执行前后的样式
+
+animation-fill-mode: none //动画执行前后不改变任何样式
+animation-fill-mode: forwards //保持目标动画最后一帧的样式
+animation-fill-mode: backwards //保持目标动画第一帧的样式
+animation-fill-mode: both //动画将会执行 forwards 和 backwards 执行的动作
+</code></pre>
+<p>animation-name keyframes？规定一些动画执行的关键帧，这个就可以比transition更加灵活的控制整个动画的过程</p>
+<pre><code class="css">@keyframes scale {
+    from {
+        trannsform: scale(1);
     }
-</code></pre>
-<p>然后再补上其他逻辑测试，用最原始的方法实现将每次action的执行信息log出来：</p>
-<pre><code class="javascript">    const redux = require(&#39;redux&#39;)
-
-    const todoApp = (state = {todo: []}, action) =&gt; {
-        if (action.type === &#39;addTodo&#39;) {
-            state.todo = [...state.todo, action.value]
-        }
-        return state
+    to {
+        transform: scale(1.8);
     }
+}
 
-    let store = redux.createStore(todoApp);
 
-    const action = {
-        type: &#39;addTodo&#39;,
-        value: &#39;todo&#39;,
+@keyframes scale {
+    0% {
+        trannsform: scale(1);
     }
-    console.log(&#39;state: &#39;, store.getState());
-    console.log(&#39;action: &#39;, action);
-    store.dispatch(action)
-    console.log(&#39;next state: &#39;, store.getState())
+    30% {
+        transform: scale(1.8);
+    }
+    80% {
+        transform: scale(3);
+    }
+}
 </code></pre>
-<p>如果不出什么意外的话，我们这段代码应该会成功运行，并且将这段log出这个action的运行情况， 如下图：<img src="/images/reduxMiddleware/noMiddlewarelogout.png" alt="noMiddlewarelogout.png"></p>
-<p>接下来我们将log这件事尝试使用redux的middleware来完成。</p>
-<ol>
-<li><p>首先，根据我们之前的了解，middleware其实是一段在action到reducer之间的处理逻辑。我们都知道，标准的一个redux发送一个action是调用store自身的<code>dispatch</code>方法。那么，我们想要在一个action到达reducer之前去做些处理的话，最好的地方应该就是尝试将store的<code>dispatch</code>替换为我们自己的，在其中加上我们的处理逻辑，例如打印log这件事。</p>
-<pre><code class="javascript">     let store = redux.createStore(todoApp);
-     const next = store.dispatch;
-     const dispatchWithLog = (action) =&gt; {
-         console.log(&#39;state: &#39;, store.getState());
-         console.log(&#39;action: &#39;, action);
-         next(action);
-         console.log(&#39;next state: &#39;, store.getState());
-     }
-     store.dispatch = dispatchWithLog;
+<p>可以定义执行过重的一些元素样式，既能from to指定两个节点，也可以使用百分比来详细的设置各个时间阶段的变化。</p>
+<p>什么时候你执行动画？</p>
+<pre><code>1. 元素第一次加载的时候开始执行
+2. 元素已经加载完毕，直接通过JS给起设置动画，则在刚设置完后执行
+3. 想办法触发浏览器的重新布局，比如添加删除class， 设置deplay:none --&gt; display: flex.之类的变化。
 </code></pre>
-<p> 我们将默认store的<code>dispatch</code>替换为自己的<code>dispatchWithLog</code>, 通过这种方式，完成了我们的需求，只要任何地方调用了store的<code>diapatch</code>去发送新的action, 我们都能讲其log出来，这个看起来已经有一点middleware的意思了。</p>
-</li>
-<li><p>虽然上面已经可以解决问题了，并且已经有点middleware的意思了，但是还有一点硬伤就是，需求多了就比较难搞了，例如就像官方上既需要log又需要Crash Reporting, 再通过这种方式去处理就显得很不优雅。Crash Reporting的middle的一个简单实现如下：</p>
-<pre><code class="javascript">     const next1 = store.dispatch;
-     const dispatchWithCreshReporting = (action) =&gt; {
-         try {
-             next1(action);
-         } catch (err) {
-             console.error(err);
-         }
-     }
-     store.dispatch = dispatchWithCreshReporting;
-</code></pre>
-<p> 我们在log之后加上这段代码, 其实就是在log那件事替换完之后，我们再次替换store上的<code>dispatch</code>，其实这个时候，我们拿到的<code>next1</code>已经是log那个替换过后的<code>dispatch</code>方法了，里面有打印log的逻辑，所以，我们在后面通过<code>store.dispatch</code>去发送action时，每一个action都会先经过Crash Reporting包装的<code>dispacth</code>方法（其中包含了Crash Report的逻辑），然后再经过log包装过后的<code>dispatch</code>方法（其中包含了打印log的逻辑）。这其实就是redux middleware的基本思想。</p>
-</li>
-<li><p>当然，redux本身给我们提供了包装过后的工具方法来专门应用middleware。其中也不是简单粗暴的替换store上的dispatch了。这个方法即为<code>applyMiddleware</code>。</p>
-</li>
-<li><p>官方的doc也给出了一个关于<code>applyMiddleware</code>的一个简单粗暴的直接替换<code>dispatch</code>的一个示例，如下：</p>
-<pre><code class="javascript">     function applyMiddlewareByMonkeypatching(store, middlewares) {
-         middlewares = middlewares.slice()
-         middlewares.reverse()
-     ​
-         // Transform dispatch function with each middleware.
-         middlewares.forEach(middleware =&gt;
-             store.dispatch = middleware(store)
-         )
-     }
-</code></pre>
-<p> 关于先逆序middlewares再进行替换，这里主要是为了，让middleware的执行顺序按照我么传给他的array顺序来进行。就像我们上面直接替换的那个例子，越往后面进行替换<code>dispatch</code>的在执行过程中先运行。</p>
-</li>
-<li><p>当然，官放的具体实现中不是这么简单粗暴的直接替换的方式，因为一来不够优雅，这种方式在链式的调用过程中有可能出现问题。比如某一个middleware并不是同步执行的，这样在进行<code>store.dispatch = middleware(store)</code>就有可能到下一个middleware时，<code>store.dispatch</code>还没有被替换。因此，官方的middleware是接受一个<code>next</code>的参数来，来拿到dispatch，并不是直接从store上对dispatch进行操作的。</p>
-</li>
-<li><p>一般一个标准的middleware是这个样子的，我们使用最初的log的那个middleware来举例，让它接受一个<code>next</code>(就是一个下一个的dispatch方法)，再返回一个<code>dispatch</code>方法。</p>
-<pre><code class="javascript">     function logger(store) {
-         return function(next) {
-             return function(action) {
-                 console.log(&#39;state: &#39;, store.getState());
-                 console.log(&#39;action: &#39;, action);
-                 let result = next(action);
-                 console.log(&#39;next state: &#39;, store.getState());
-                 return result;
-             }
-         }
-     }
-
-     function creshReporting(store) {
-         return function(next) {
-             return function(action) {
-                 try {
-                     return next(action);
-                 } catch (err) {
-                     console.error(err);
-                     return next;
-                 }
-             }
-         }
-     }
-</code></pre>
-<p> 然后假设我们在apply时这样应用一下：</p>
-<pre><code class="javascript">     function applyMiddleware(store, middlewares = [logger, crashReporting]) {
-         middlewares = middlewares.slice()
-         middlewares.reverse()
-         let dispatch = store.dispatch
-         middlewares.forEach(middleware =&gt;
-             dispatch = middleware(store)(dispatch)
-         )
-         return Object.assign({}, store, { dispatch })
-     }
-</code></pre>
-<p> 这样就能够进行优雅的链式调用了。并且用上ES6箭头函数后，这样写出来会更加的优雅：</p>
-<pre><code class="javascript">     const logger = store =&gt; next =&gt; action =&gt; {
-         console.log(&#39;state: &#39;, store.getState());
-         console.log(&#39;action: &#39;, action);
-         let result = next(action);
-         console.log(&#39;next state: &#39;, store.getState());
-         return result;
-     }
-</code></pre>
-</li>
-<li>最后，其实redux middleware使用起来其实是非常的方便的，只需要记住<code>applyMiddleware</code>这个API即可。即<code>const store = createStore(reducer, applyMiddleware(middlewares))</code></li>
-</ol>
-<p>Reference： <a href="https://redux.js.org/advanced/middleware" target="_blank" rel="noopener">Redux Middleware Doc</a></p>
-
         
     
 
@@ -633,21 +589,13 @@
             <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
     <!-- Prev Nav -->
     
-        <a href="/2018/06/16/Flex布局整理/" id="post_nav-newer" class="prev-content">
-            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
-                <i class="material-icons">arrow_back</i>
-            </button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            新篇
-        </a>
-    
 
     <!-- Section Spacer -->
     <div class="section-spacer"></div>
 
     <!-- Next Nav -->
     
-        <a href="/2018/05/26/blog-cookbook/" id="post_nav-older" class="next-content">
+        <a href="/2019/04/20/Wordpress-Docker/" id="post_nav-older" class="next-content">
             旧篇
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
