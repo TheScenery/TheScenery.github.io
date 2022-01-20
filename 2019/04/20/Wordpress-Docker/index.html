@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html style="display: none;" lang="zh">
-    <head><meta name="generator" content="Hexo 3.8.0">
+    <head>
     <meta charset="utf-8">
     <!--
         © Material Theme
@@ -52,14 +52,14 @@
     <link rel="icon shortcut" type="image/ico" href="/img/favicon.jpg">
     <link rel="icon" href="/img/favicon.jpg">
 
-    <meta name="format-detection" content="telephone=no">
-    <meta name="description" itemprop="description" content>
-    <meta name="keywords" content>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" itemprop="description" content="">
+    <meta name="keywords" content="">
     <meta name="theme-color" content="#0097A7">
 
     <!-- Disable Fucking Bloody Baidu Tranformation -->
-    <meta http-equiv="Cache-Control" content="no-transform">
-    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
 
     <!--[if lte IE 9]>
         <link rel="stylesheet" href="/css/ie-blocker.css">
@@ -239,7 +239,7 @@
     <meta property="og:type" content="blog">
     <meta property="og:title" content="Wordpress-Docker | Wenbin Liu&#39;s Blog">
     <meta property="og:image" content="/img/favicon.jpg">
-    <meta property="og:description" content>
+    <meta property="og:description" content="">
     
 
     
@@ -252,7 +252,7 @@
 
     <!-- Add canonical link for SEO -->
     
-        <link rel="canonical" href="http://TheScenery.github.io/2019/04/20/Wordpress-Docker/index.html">
+        <link rel="canonical" href="http://TheScenery.github.io/2019/04/20/Wordpress-Docker/index.html" />
     
 
     <!-- Structured-data for SEO -->
@@ -301,7 +301,7 @@
     <!-- Custom Head -->
     
 
-</head>
+<meta name="generator" content="Hexo 6.0.0"></head>
 
 
     
@@ -345,12 +345,13 @@
     <!-- Left aligned menu below button -->
     
     
-    <button id="post-toc-trigger-btn" class="mdl-button mdl-js-button mdl-button--icon">
+    <button id="post-toc-trigger-btn"
+        class="mdl-button mdl-js-button mdl-button--icon">
         <i class="material-icons">format_list_numbered</i>
     </button>
 
     <ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="post-toc-trigger-btn" style="max-height:80vh; overflow-y:scroll;">
-        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#创建网络"><span class="post-toc-number">1.</span> <span class="post-toc-text">创建网络</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Mysql的安装"><span class="post-toc-number">2.</span> <span class="post-toc-text">Mysql的安装</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Wordpress的安装"><span class="post-toc-number">3.</span> <span class="post-toc-text">Wordpress的安装</span></a></li></ol>
+        <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%88%9B%E5%BB%BA%E7%BD%91%E7%BB%9C"><span class="post-toc-number">1.</span> <span class="post-toc-text">创建网络</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Mysql%E7%9A%84%E5%AE%89%E8%A3%85"><span class="post-toc-number">2.</span> <span class="post-toc-text">Mysql的安装</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Wordpress%E7%9A%84%E5%AE%89%E8%A3%85"><span class="post-toc-number">3.</span> <span class="post-toc-text">Wordpress的安装</span></a></li></ol>
     </ul>
     
 
@@ -396,7 +397,7 @@
 
     <!-- Author Avatar -->
     <div id="author-avatar">
-        <img src="/img/favicon.jpg" width="44px" height="44px" alt="Author Avatar">
+        <img src="/img/favicon.jpg" width="44px" height="44px" alt="Author Avatar"/>
     </div>
     <!-- Author Name & Date -->
     <div>
@@ -502,7 +503,7 @@ docker pull mysql：5.7
 #  --network 配置处于那个网络中
 docker run --name mysql --network=my-net -v /var/lib/mysql-datadir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=wordpressdb -e MYSQL_USER=wordpressuser -e MYSQL_PASSWORD=password -d mysql:5.7
 </code></pre>
-<p>详细的配置情况可以参照官方文档<a href="https://hub.docker.com/_/mysql" target="_blank" rel="noopener">docker mysql</a><br>使用<code>docker ps</code>查看container的运行情况，如下图，则一个mysql的container已经可以使用了。<br><img src="/images/wordpress-docker/docker-mysql-success.png" alt="mysql-sucess"></p>
+<p>详细的配置情况可以参照官方文档<a target="_blank" rel="noopener" href="https://hub.docker.com/_/mysql">docker mysql</a><br>使用<code>docker ps</code>查看container的运行情况，如下图，则一个mysql的container已经可以使用了。<br><img src="/images/wordpress-docker/docker-mysql-success.png" alt="mysql-sucess"></p>
 <h2 id="Wordpress的安装"><a href="#Wordpress的安装" class="headerlink" title="Wordpress的安装"></a>Wordpress的安装</h2><pre><code class="shell"># 获取最新的Wordpress镜像
 docker pull wordpress
 # 创建Wordpress容器
@@ -532,7 +533,7 @@ docker run --name worepress --network=my-net -v /var/lib/wordpress-datadir:/var/
             <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
     <!-- Prev Nav -->
     
-        <a href="/2019/05/07/css动画之transition和animation/" id="post_nav-newer" class="prev-content">
+        <a href="/2019/05/07/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/" id="post_nav-newer" class="prev-content">
             <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
                 <i class="material-icons">arrow_back</i>
             </button>
@@ -546,7 +547,7 @@ docker run --name worepress --network=my-net -v /var/lib/wordpress-datadir:/var/
 
     <!-- Next Nav -->
     
-        <a href="/2019/04/16/N阶乘尾部0的个数/" id="post_nav-older" class="next-content">
+        <a href="/2019/04/16/N%E9%98%B6%E4%B9%98%E5%B0%BE%E9%83%A80%E7%9A%84%E4%B8%AA%E6%95%B0/" id="post_nav-older" class="next-content">
             旧篇
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
@@ -638,8 +639,8 @@ docker run --name worepress --network=my-net -v /var/lib/wordpress-datadir:/var/
             </a>
             <ul class="dropdown-menu">
             <li>
-                <a class="sidebar_archives-link" href="/archives/2021/04/">四月 2021<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2019/05/">五月 2019<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2019/04/">四月 2019<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2018/06/">六月 2018<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2018/05/">五月 2018<span class="sidebar_archives-count">3</span></a>
-            </li></ul>
+                <a class="sidebar_archives-link" href="/archives/2022/01/">一月 2022<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2021/04/">四月 2021<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2019/05/">五月 2019<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2019/04/">四月 2019<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2018/06/">六月 2018<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2018/05/">五月 2018<span class="sidebar_archives-count">3</span></a>
+            </ul>
         </li>
         
     
@@ -844,7 +845,9 @@ It will not impact the appearance and can give developers a lot of support :)
 <script>
 	var agent = navigator.userAgent.toLowerCase();
 	if(agent.indexOf('ucbrowser')>0) {
-		document.write('<link rel="stylesheet" href="/css/uc.css">');
+		document.write('
+<link rel="stylesheet" href="/css/uc.css">
+');
 	   alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
 	}
 </script>
