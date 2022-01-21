@@ -1,0 +1,576 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>学习理解Redux Middleware - Wenbin Liu&#39;s Blog</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="TriDiamond Obsidian,"> 
+    <meta name="description" content="Redux中的middleware其实就像是给你提供一个在action发出到实际reducer执行之前处理一些事情的机会。可以允许我们添加自己的逻辑在这段当中。它提供的是位于 action 被发起之,"> 
+    <meta name="author" content="Wenbin Liu"> 
+    <link rel="alternative" href="atom.xml" title="Wenbin Liu&#39;s Blog" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/css/ball-atom.min.css">
+
+    
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+
+    
+    <script>var musiclist = ""</script>
+    
+<script src="/js/loadaplayer.js"></script>
+
+    <!-- 引用依赖 -->
+    
+<link rel="stylesheet" href="/aplayer/dist/APlayer.min.css">
+
+    
+<script src="/aplayer/dist/APlayer.min.js"></script>
+<script src="/js/Meting.min.js"></script>
+
+    
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">Wenbin Liu&#39;s Blog</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="http://TheScenery.github.io">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">学习理解Redux Middleware</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                        <a href="javascript:;" class="iconfont icon-share1"></a>
+                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url('/img/cover.jpg') ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="javascript:;"><b>「 </b>文章<b> 」</b></a>
+                
+                五月 27, 2018
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/2018/05/27/redux-middleware/" title="学习理解Redux Middleware" class="">学习理解Redux Middleware</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    6.3k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    6 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">0</span>
+                </span>
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/Redux-Middleware/" rel="tag">Redux, Middleware</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <p>Redux中的middleware其实就像是给你提供一个在action发出到实际reducer执行之前处理一些事情的机会。可以允许我们添加自己的逻辑在这段当中。<b>它提供的是位于 action 被发起之后，到达 reducer 之前的扩展点。</b></p>
+<p>加入middleware后，整个数据的流动如下图所示：<img src="/images/reduxMiddleware/reduxmiddleware.png" alt="middleware-data-flow"></p>
+<p>举个简单的例子，我们使用middleware将每次action的执行详细信息都打出来。就用官方demo中的todoApp来举例，我们先实现一个简单的reducer用来添加一个todo:</p>
+<pre><code class="javascript">    const todoApp = (state = &#123;todo: []&#125;, action) =&gt; &#123;
+        if (action.type === &#39;addTodo&#39;) &#123;
+            state.todo = [...state.todo, action.value]
+        &#125;
+        return state
+    &#125;
+</code></pre>
+<p>然后再补上其他逻辑测试，用最原始的方法实现将每次action的执行信息log出来：</p>
+<pre><code class="javascript">    const redux = require(&#39;redux&#39;)
+
+    const todoApp = (state = &#123;todo: []&#125;, action) =&gt; &#123;
+        if (action.type === &#39;addTodo&#39;) &#123;
+            state.todo = [...state.todo, action.value]
+        &#125;
+        return state
+    &#125;
+
+    let store = redux.createStore(todoApp);
+
+    const action = &#123;
+        type: &#39;addTodo&#39;,
+        value: &#39;todo&#39;,
+    &#125;
+    console.log(&#39;state: &#39;, store.getState());
+    console.log(&#39;action: &#39;, action);
+    store.dispatch(action)
+    console.log(&#39;next state: &#39;, store.getState())
+</code></pre>
+<p>如果不出什么意外的话，我们这段代码应该会成功运行，并且将这段log出这个action的运行情况， 如下图：<img src="/images/reduxMiddleware/noMiddlewarelogout.png" alt="noMiddlewarelogout.png"></p>
+<p>接下来我们将log这件事尝试使用redux的middleware来完成。</p>
+<ol>
+<li><p>首先，根据我们之前的了解，middleware其实是一段在action到reducer之间的处理逻辑。我们都知道，标准的一个redux发送一个action是调用store自身的<code>dispatch</code>方法。那么，我们想要在一个action到达reducer之前去做些处理的话，最好的地方应该就是尝试将store的<code>dispatch</code>替换为我们自己的，在其中加上我们的处理逻辑，例如打印log这件事。</p>
+<pre><code class="javascript">    let store = redux.createStore(todoApp);
+    const next = store.dispatch;
+    const dispatchWithLog = (action) =&gt; &#123;
+        console.log(&#39;state: &#39;, store.getState());
+        console.log(&#39;action: &#39;, action);
+        next(action);
+        console.log(&#39;next state: &#39;, store.getState());
+    &#125;
+    store.dispatch = dispatchWithLog;
+</code></pre>
+<p> 我们将默认store的<code>dispatch</code>替换为自己的<code>dispatchWithLog</code>, 通过这种方式，完成了我们的需求，只要任何地方调用了store的<code>diapatch</code>去发送新的action, 我们都能讲其log出来，这个看起来已经有一点middleware的意思了。</p>
+</li>
+<li><p>虽然上面已经可以解决问题了，并且已经有点middleware的意思了，但是还有一点硬伤就是，需求多了就比较难搞了，例如就像官方上既需要log又需要Crash Reporting, 再通过这种方式去处理就显得很不优雅。Crash Reporting的middle的一个简单实现如下：</p>
+<pre><code class="javascript">    const next1 = store.dispatch;
+    const dispatchWithCreshReporting = (action) =&gt; &#123;
+        try &#123;
+            next1(action);
+        &#125; catch (err) &#123;
+            console.error(err);
+        &#125;
+    &#125;
+    store.dispatch = dispatchWithCreshReporting;
+</code></pre>
+<p> 我们在log之后加上这段代码, 其实就是在log那件事替换完之后，我们再次替换store上的<code>dispatch</code>，其实这个时候，我们拿到的<code>next1</code>已经是log那个替换过后的<code>dispatch</code>方法了，里面有打印log的逻辑，所以，我们在后面通过<code>store.dispatch</code>去发送action时，每一个action都会先经过Crash Reporting包装的<code>dispacth</code>方法（其中包含了Crash Report的逻辑），然后再经过log包装过后的<code>dispatch</code>方法（其中包含了打印log的逻辑）。这其实就是redux middleware的基本思想。</p>
+</li>
+<li><p>当然，redux本身给我们提供了包装过后的工具方法来专门应用middleware。其中也不是简单粗暴的替换store上的dispatch了。这个方法即为<code>applyMiddleware</code>。</p>
+</li>
+<li><p>官方的doc也给出了一个关于<code>applyMiddleware</code>的一个简单粗暴的直接替换<code>dispatch</code>的一个示例，如下：</p>
+<pre><code class="javascript">    function applyMiddlewareByMonkeypatching(store, middlewares) &#123;
+        middlewares = middlewares.slice()
+        middlewares.reverse()
+    ​
+        // Transform dispatch function with each middleware.
+        middlewares.forEach(middleware =&gt;
+            store.dispatch = middleware(store)
+        )
+    &#125;
+</code></pre>
+<p> 关于先逆序middlewares再进行替换，这里主要是为了，让middleware的执行顺序按照我么传给他的array顺序来进行。就像我们上面直接替换的那个例子，越往后面进行替换<code>dispatch</code>的在执行过程中先运行。</p>
+</li>
+<li><p>当然，官放的具体实现中不是这么简单粗暴的直接替换的方式，因为一来不够优雅，这种方式在链式的调用过程中有可能出现问题。比如某一个middleware并不是同步执行的，这样在进行<code>store.dispatch = middleware(store)</code>就有可能到下一个middleware时，<code>store.dispatch</code>还没有被替换。因此，官方的middleware是接受一个<code>next</code>的参数来，来拿到dispatch，并不是直接从store上对dispatch进行操作的。</p>
+</li>
+<li><p>一般一个标准的middleware是这个样子的，我们使用最初的log的那个middleware来举例，让它接受一个<code>next</code>(就是一个下一个的dispatch方法)，再返回一个<code>dispatch</code>方法。</p>
+<pre><code class="javascript">    function logger(store) &#123;
+        return function(next) &#123;
+            return function(action) &#123;
+                console.log(&#39;state: &#39;, store.getState());
+                console.log(&#39;action: &#39;, action);
+                let result = next(action);
+                console.log(&#39;next state: &#39;, store.getState());
+                return result;
+            &#125;
+        &#125;
+    &#125;
+
+    function creshReporting(store) &#123;
+        return function(next) &#123;
+            return function(action) &#123;
+                try &#123;
+                    return next(action);
+                &#125; catch (err) &#123;
+                    console.error(err);
+                    return next;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+</code></pre>
+<p> 然后假设我们在apply时这样应用一下：</p>
+<pre><code class="javascript">    function applyMiddleware(store, middlewares = [logger, crashReporting]) &#123;
+        middlewares = middlewares.slice()
+        middlewares.reverse()
+        let dispatch = store.dispatch
+        middlewares.forEach(middleware =&gt;
+            dispatch = middleware(store)(dispatch)
+        )
+        return Object.assign(&#123;&#125;, store, &#123; dispatch &#125;)
+    &#125;
+</code></pre>
+<p> 这样就能够进行优雅的链式调用了。并且用上ES6箭头函数后，这样写出来会更加的优雅：</p>
+<pre><code class="javascript">    const logger = store =&gt; next =&gt; action =&gt; &#123;
+        console.log(&#39;state: &#39;, store.getState());
+        console.log(&#39;action: &#39;, action);
+        let result = next(action);
+        console.log(&#39;next state: &#39;, store.getState());
+        return result;
+    &#125;
+</code></pre>
+</li>
+<li><p>最后，其实redux middleware使用起来其实是非常的方便的，只需要记住<code>applyMiddleware</code>这个API即可。即<code>const store = createStore(reducer, applyMiddleware(middlewares))</code></p>
+</li>
+</ol>
+<p>Reference： <a target="_blank" rel="noopener" href="https://redux.js.org/advanced/middleware">Redux Middleware Doc</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/statics/chengdu.mp3'></li>
+                
+                    
+            </ul>
+            
+                        
+            
+            
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d=''
+        data-p='https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token'
+    >留言</div>
+
+
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://s2.ax1x.com/2019/09/19/nLtSiD.png" height=300 width=300></img>
+                    <p>Wenbin Liu</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        
+                            
+                            
+                            
+                        
+                        
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/">9 <p>文章</p></a></li>
+                    <li><a href="/categories">0 <p>分类</p></a></li>
+                    <li><a href="/tags">4 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+    <p class="copyright" id="copyright">
+        &copy; 2022
+        <span class="gradient-text">
+            Wenbin Liu
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.9.3" target="_blank" rel="noopener">v1.4.9.3</a></small>
+        
+        </br>
+        
+        <span class="gradient-text">
+            <a href="https://beian.miit.gov.cn/" title="beian.miit.gov.cn" target="_blank" rel="noopener">beian.miit.gov.cn</a>
+        </span>
+        
+        
+        </br>
+        <span style="display: inline-block;"> <img src=/null></span>
+        
+        <span class="gradient-text">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44010602009049" title="www.beian.gov.cn&#x2F;portal&#x2F;registerSystemInfo?recordcode&#x3D;44010602009049" target="_blank" rel="noopener">www.beian.gov.cn&#x2F;portal&#x2F;registerSystemInfo?recordcode&#x3D;44010602009049</a>
+        </span>
+        
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.5.0/gitalk.min.css">
+ 
+<script src="//cdn.bootcss.com/gitalk/1.5.0/gitalk.min.js"></script>
+  
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/obsidian.js"></script>
+<script src="/js/jquery.truncate.js"></script>
+<script src="/js/search.js"></script>
+ 
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+ 
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+   
+<script src="/js/busuanzi.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    if ($('span[id^="busuanzi_"]').length) {
+      initialBusuanzi();
+    }
+  });
+</script>
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+  
+
+<script>
+  function initialTyped() {
+    var typedTextEl = $('.typed-text');
+    if (typedTextEl && typedTextEl.length > 0) {
+      var typed = new Typed('.typed-text', {
+        strings: ['Think like an artist, develop like an artisan', '艺术家思维去思考问题，工匠创造精神去开发'],
+        typeSpeed: 90,
+        loop: true,
+        loopCount: Infinity,
+        backSpeed: 20,
+      });
+    }
+  }
+
+  if ($('.article-header') && $('.article-header').length) {
+    $(document).ready(function () {
+      initialTyped();
+    });
+  }
+</script>
+
+
+
+
+<!-- 引用依赖 -->
+<script>document.write(aplayerconf)</script>
+
+
+
+
+</html>
