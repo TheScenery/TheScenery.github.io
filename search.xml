@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>如何发布一个go package</title>
+      <link href="/2022/01/22/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/"/>
+      <url>/2022/01/22/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/</url>
+      
+        <content type="html"><![CDATA[<p>如何将自己所写的Go package开源并提供给别人使用？</p><h3 id="1-首先找到在代码托管平台创建一个仓库（以Github为例）"><a href="#1-首先找到在代码托管平台创建一个仓库（以Github为例）" class="headerlink" title="1. 首先找到在代码托管平台创建一个仓库（以Github为例）"></a>1. 首先找到在代码托管平台创建一个仓库（以Github为例）</h3><p><img src="/images/publishGoPackage/createRepository.png" alt="create-repository"></p><h3 id="2-添加自己的package代码并且提交"><a href="#2-添加自己的package代码并且提交" class="headerlink" title="2. 添加自己的package代码并且提交"></a>2. 添加自己的package代码并且提交</h3><h3 id="3-回到github该仓库中创建一个release"><a href="#3-回到github该仓库中创建一个release" class="headerlink" title="3. 回到github该仓库中创建一个release"></a>3. 回到github该仓库中创建一个release</h3><p><img src="/images/publishGoPackage/createRelease.png" alt="create-release"></p><h3 id="4-填写release相关信息，表明版本号"><a href="#4-填写release相关信息，表明版本号" class="headerlink" title="4. 填写release相关信息，表明版本号"></a>4. 填写release相关信息，表明版本号</h3><p><img src="/images/publishGoPackage/releaseInfo.png" alt="release-info"></p><h3 id="5-发布成功！可以使用go-get命令来使用你刚刚发布好的包了"><a href="#5-发布成功！可以使用go-get命令来使用你刚刚发布好的包了" class="headerlink" title="5. 发布成功！可以使用go get命令来使用你刚刚发布好的包了"></a>5. 发布成功！可以使用<code>go get</code>命令来使用你刚刚发布好的包了</h3><pre><code class="shell">go get -u github.com/TheScenery/BoltCompact</code></pre>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>go lang复制文件</title>
       <link href="/2022/01/20/go-lang%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6/"/>
       <url>/2022/01/20/go-lang%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6/</url>
