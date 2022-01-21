@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>go lang复制文件</title>
+      <link href="/2022/01/20/go-lang%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6/"/>
+      <url>/2022/01/20/go-lang%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6/</url>
+      
+        <content type="html"><![CDATA[<p>探索Go语言中复制一个文件的基本方法</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>JavaScript内存泄漏</title>
+      <link href="/2021/04/13/JavaScript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/"/>
+      <url>/2021/04/13/JavaScript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</url>
+      
+        <content type="html"><![CDATA[<p>JavaScript内存泄漏，通俗来讲就是JavaScript申请的变量不能被GC回收。</p><h3 id="浏览器GC回收机制"><a href="#浏览器GC回收机制" class="headerlink" title="浏览器GC回收机制"></a>浏览器GC回收机制</h3><p>标记清除或者引用计数，而现代浏览器则都为标记清除类似的机制。</p><p>标记清除顾名思义是一种分两阶段对对象进行垃圾回收的算法。</p><p>第一阶段：标记。从根结点出发遍历对象，对访问过的对象打上标记，表示该对象可达。</p><p>第二阶段：清除。对那些没有标记的对象进行回收，这样使得不能利用的空间能够重新被利用。</p><p>因此，造成内存泄漏原因无非为，意外的造成了变量从根结点一直能够访问到这些变量。</p><h3 id="内存泄漏可能的原因-无非为不小心能把变量挂到根结点的方式"><a href="#内存泄漏可能的原因-无非为不小心能把变量挂到根结点的方式" class="headerlink" title="内存泄漏可能的原因(无非为不小心能把变量挂到根结点的方式)"></a>内存泄漏可能的原因(无非为不小心能把变量挂到根结点的方式)</h3><ol><li><p>意外写到了根结点上的变量</p><p> 这种一般是由于手残导致的，一般不太会发生。写的时候定义变量注意都加上 var let const</p><pre><code class="javascript">//别写这种代码就行function() &#123;    a = 123;&#125;</code></pre></li><li><p>全局的事件监听</p><p> 事件监听一定记得及时取消，只要监听和摘取成对出现，一般不会出现太大的问题。</p></li><li><p>setTimeOut，setInterval和requestAnimationFrame</p><p> 用完记得及时取消，保证成对出现</p><pre><code class="javascript">setTimeOut                clearTimeoutsetInterval               clearIntervalrequestAnimationFrame     cancelAnimationFrame</code></pre></li><li><p>闭包？并不会引起内存泄漏</p><p> 经过实际验证，现代浏览器中，必报并不会引起内脆泄漏。应该是个传说中的某个浏览器的BUG</p></li></ol>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> JavaScript, 内存泄漏 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>css动画之transition和animation</title>
+      <link href="/2019/05/07/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/"/>
+      <url>/2019/05/07/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/</url>
+      
+        <content type="html"><![CDATA[<p>transition和animation是两个在css中主要用来处理动画的属性，今天用到了，将使用过程中的一些疑惑和问题记录在这里。</p><h2 id="transition-使用方法"><a href="#transition-使用方法" class="headerlink" title="transition 使用方法"></a>transition 使用方法</h2><pre><code class="css">transition: property duration timing-function delay;/*    property 过渡效果变化的属性，即这个属性的变化是一个过度效果    duration 这个过度效果持续的时间    timing-function 变化速度的时间函数    delay 延迟多久之后这个效果才开始发生变化*/// 还可以分开为四个属性单独设置transition-propertytransition-duration // 默认值0transition-timing-function // 默认值 ease/*     一般都会用一些内置的时间函数    transition-timing-function: ease    transition-timing-function: ease-in    transition-timing-function: ease-out    transition-timing-function: ease-in-out    transition-timing-function: linear    transition-timing-function: cubic-bezier(0.1, 0.7, 1.0, 0.1)    transition-timing-function: step-start    transition-timing-function: step-end    transition-timing-function: steps(4, end)    transition-timing-function: ease, step-start, cubic-bezier(0.1, 0.7, 1.0, 0.1)    transition-timing-function: inherit */transition-delay // 默认值0</code></pre><pre><code>一些小问题1. 那么问题来了，什么时候会触发这个效果呢？  设置的property的发生变化则触发这个效果。2. 发生的变化必须是确定的状态，才会触发。 比如height变为fitContent 则不会触发。遇到这种情况，可以是一个max-height来进行代替，将max-height设置为一个fitContent永远达不到的值，就可以用来模模拟自适应高度的变化了。</code></pre><p><a href="https://jsfiddle.net/TheScenery/fmwqy4pr/24/">Height Demo</a></p><h2 id="animation-使用方法"><a href="#animation-使用方法" class="headerlink" title="animation 使用方法"></a>animation 使用方法</h2><pre><code class="css">animation: name duration timing-function delay iteration-count direction;// 同样也可以每个都单独设置animation-name // 规定需要绑定到选择器的 keyframe 名称animation-duration // 规定完成动画所花费的时间，以秒或毫秒计，默认0，所以省略这一项往往会没有动画效果animation-timing-function // 规定动画的速度曲线animation-delay // 规定在动画开始之前的延迟animation-iteration-count // 规定动画应该播放的次数,可以设置为无数次 infiniteanimation-direction // 规定是否应该轮流反向播放动画， 可以设置一些反方向什么的。// 特殊的animation-fill-mode //动画执行前后的样式animation-fill-mode: none //动画执行前后不改变任何样式animation-fill-mode: forwards //保持目标动画最后一帧的样式animation-fill-mode: backwards //保持目标动画第一帧的样式animation-fill-mode: both //动画将会执行 forwards 和 backwards 执行的动作</code></pre><p>animation-name keyframes？规定一些动画执行的关键帧，这个就可以比transition更加灵活的控制整个动画的过程</p><pre><code class="css">@keyframes scale &#123;    from &#123;        trannsform: scale(1);    &#125;    to &#123;        transform: scale(1.8);    &#125;&#125;@keyframes scale &#123;    0% &#123;        trannsform: scale(1);    &#125;    30% &#123;        transform: scale(1.8);    &#125;    80% &#123;        transform: scale(3);    &#125;&#125;</code></pre><p>可以定义执行过重的一些元素样式，既能from to指定两个节点，也可以使用百分比来详细的设置各个时间阶段的变化。</p><p>什么时候你执行动画？</p><pre><code>1. 元素第一次加载的时候开始执行2. 元素已经加载完毕，直接通过JS给起设置动画，则在刚设置完后执行3. 想办法触发浏览器的重新布局，比如添加删除class， 设置deplay:none --&gt; display: flex.之类的变化。</code></pre>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Wordpress-Docker</title>
+      <link href="/2019/04/20/Wordpress-Docker/"/>
+      <url>/2019/04/20/Wordpress-Docker/</url>
+      
+        <content type="html"><![CDATA[<p>在云平台上使用docker搭建Wordpress网站， 最主要的有两件事情：</p><ol><li>安装mysql</li><li>安装Wordpress</li></ol><h2 id="创建网络"><a href="#创建网络" class="headerlink" title="创建网络"></a>创建网络</h2><p>为了让Wordpress和mysql两个container在同一个网络里方便通信</p><pre><code class="shell">docker network create my-net</code></pre><h2 id="Mysql的安装"><a href="#Mysql的安装" class="headerlink" title="Mysql的安装"></a>Mysql的安装</h2><pre><code class="shell"># 获取mysql镜像到本地， 不适用最新版是因为认证方式有问题docker pull mysql：5.7# 使用上一步获取的镜像 mysql 启动一个容器#   --name 容器名称#   --v 数据映射。 将mysql的数据存储在宿主机的 /var/lib/mysql-datadir#   --e, 设置环境变量，这里主要配置了mysql默认的root用户密码， 并且给Wordpress设置了一套DB的用户信息#  --network 配置处于那个网络中docker run --name mysql --network=my-net -v /var/lib/mysql-datadir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=wordpressdb -e MYSQL_USER=wordpressuser -e MYSQL_PASSWORD=password -d mysql:5.7</code></pre><p>详细的配置情况可以参照官方文档<a href="https://hub.docker.com/_/mysql">docker mysql</a><br>使用<code>docker ps</code>查看container的运行情况，如下图，则一个mysql的container已经可以使用了。<br><img src="/images/wordpress-docker/docker-mysql-success.png" alt="mysql-sucess"></p><h2 id="Wordpress的安装"><a href="#Wordpress的安装" class="headerlink" title="Wordpress的安装"></a>Wordpress的安装</h2><pre><code class="shell"># 获取最新的Wordpress镜像docker pull wordpress# 创建Wordpress容器# 参数和上面相似的就不解释了# --link docker 用来连接两个容器的，详细请参见官方文档# 环境变量的DB信息，使用上一步创建mysql时生成的进行配置docker run --name worepress --network=my-net -v /var/lib/wordpress-datadir:/var/www/html -e WORDPRESS_DB_HOST=mysql -e WORDPRESS_DB_USER=wordpressuser -e WORDPRESS_DB_PASSWORD=password -e WORDPRESS_DB_NAME=wordpressdb -p 80:80 -d wordpress</code></pre><p>访问主机IP，看到Wordpress的安装界面即为成功。<br><img src="/images/wordpress-docker/wordpressSuccess.png" alt="wordpress-sucess"></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>N阶乘尾部0的个数</title>
+      <link href="/2019/04/16/N%E9%98%B6%E4%B9%98%E5%B0%BE%E9%83%A80%E7%9A%84%E4%B8%AA%E6%95%B0/"/>
+      <url>/2019/04/16/N%E9%98%B6%E4%B9%98%E5%B0%BE%E9%83%A80%E7%9A%84%E4%B8%AA%E6%95%B0/</url>
+      
+        <content type="html"><![CDATA[<p>偶然看到一个比较有意思的问题，计算N!的结尾到底有多少个0，其中一些解法，确实给自己带来了很多新颖的视角，特地记录下来。</p><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>给定一个整数N， 那么N！的末尾到底有多少个0？</p><p>例如： N = 10， 则N！为3628800， 那么其结尾有两个0.</p><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>最直接，也是直接就想到的，就是现算出N！是多少，然后看能整除10多少次，就可以统计出来最后有多少个0了。但转念一想N阶乘的增长幅度非常大。可能N稍微大一点，就会溢出。虽然这个方法，不科学，但还是感兴趣的去试了一下。</p><pre><code class="javascript">const factorial = (n) =&gt; n === 1 ? 1 : n * factorial(n - 1);</code></pre><p>试着算了下，JS当中，算到19时，其结果已经超出了<code>MAX_SAFE_INTEGER</code>了。</p><p>第二种，转换角度，既然硬算不合适，而且最后算出结果之后还需要，看能被10整除多少次，那何不看在相乘的过程中总共会出现多少个10呢。即寻找最多可以促出多少个<code>2 * 5</code>。在计算阶乘的过程中，没两个数就会有一个能被2整除，但每5个数才会出现一个能被5整除的，所以只要有能找到5，则肯定有足够多的2可以和其促成一对。所以问题变成了，在阶乘序列中，能分解出多少个5.</p><pre><code class="javascript">function tailZero(n) &#123;    let total = 0;    for (let i = 1; i &lt;=n; i++) &#123;        let t = i;        while (t % 5 === 0) &#123;            total++;            t /= 5;        &#125;    &#125;    console.log(&#39;tail zeros:&#39;, total)&#125;</code></pre><p><a href="https://github.com/TheScenery/DayDayUp/blob/master/Others/N!.js">测试程序地址</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Flex布局整理</title>
+      <link href="/2018/06/16/Flex%E5%B8%83%E5%B1%80%E6%95%B4%E7%90%86/"/>
+      <url>/2018/06/16/Flex%E5%B8%83%E5%B1%80%E6%95%B4%E7%90%86/</url>
+      
+        <content type="html"><![CDATA[<p>Flex布局，即为“弹性布局”，只要有两个基本的概念，容器、成员。<br><img src="/images/flex/flexbox.png" alt="middleware-data-flow"></p><p>使用flex布局模型，首先需要将Container设置为<code>display: flex</code>， 注意， 设定了flex之后，成员的<code>float、clear</code>和<code>vertical-align</code>属性将失效</p><p>Flex Container主要有以下属性可以设置：</p><ol><li>flex-direction</li><li>justify-content</li><li>align-items</li><li>flex-wrap</li><li>align-content</li><li>flex-flow</li></ol><p>flex-direction: 主要用来决定成员在主坐标轴上的排列顺序，有以下四个取值：</p><pre><code class="css">    row: 水平方向排列，从左边开始。 默认值    row-reverse: 水平方向排列， 从右边开始    column: 垂直方向排列，从上面开始    column-reverse: 垂直方向排列， 从下面开始</code></pre><p>justify-content：决定在主坐标轴上，里面的成员如何分布。可选值非常多：但是，常用的只有这几个：</p><pre><code>    center: 居中对齐    space-between: 均匀排列每个元素,首个元素放置于起点，末尾元素放置终点    space-around: 均匀排列每个元素, 每个元素周围分配相同的空间    space-evenly: 均匀排列每个元素, 每个元素之间的间隔相等    flex-start: 从行首起始位置开始排列    flex-end: 从行尾位置开始排列</code></pre><p>align-items: 决定成员在副坐标轴如何分布， 可选值一样很多，常用的几个：</p><pre><code>    center: 局中对齐    stretch： 占满高度。 默认值    flex-start： 起点对齐    flex-end: 终点对齐</code></pre><p>flex-wrap： 定义flex成员是否允许在副坐标轴上折行：</p><pre><code>    nowrap: 不折行    wrap： 自动折行，向后插行    wrap-reverse： 自动折行，向前插行</code></pre><p>align-content：决定，如果有多行时，他们之间如何对齐。类似于<code>justfy-content</code>的取值，只不过是定义的是在副坐标轴上多行之间的分布方式。</p><p>flex-flow：<code>flex-direction</code> 和 <code>flex-wrap</code> 的简写</p><p>Flex成员的属性：</p><ol><li>flex-grow</li><li>flex-shrink</li><li>flex-basis</li><li>flex</li><li>align-self</li></ol><p>flex-grow： 放大因子， 默认值为0， 既即使有剩余空间，也不放大。取值自然数</p><p>flex-shrink： 所小因子，默认值1，所以空间不够时，会缩小， 取值也为自然数</p><p>flex-basis： 指定了 flex 元素在主轴方向上的初始大小， 默认值为auto， 即原本大小</p><p>flex: 这是一个简写属性，可以同时设置flex-grow, flex-shrink与flex-basis。</p><p>align-self: 覆盖 align-items 的值, 即自己设置自己的在副坐标轴方向对齐方式。如果任何 flex 元素的侧轴方向 margin 值设置为 auto，则会忽略 align-self。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Flex </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>学习理解Redux Middleware</title>
+      <link href="/2018/05/27/redux-middleware/"/>
+      <url>/2018/05/27/redux-middleware/</url>
+      
+        <content type="html"><![CDATA[<p>Redux中的middleware其实就像是给你提供一个在action发出到实际reducer执行之前处理一些事情的机会。可以允许我们添加自己的逻辑在这段当中。<b>它提供的是位于 action 被发起之后，到达 reducer 之前的扩展点。</b></p><p>加入middleware后，整个数据的流动如下图所示：<img src="/images/reduxMiddleware/reduxmiddleware.png" alt="middleware-data-flow"></p><p>举个简单的例子，我们使用middleware将每次action的执行详细信息都打出来。就用官方demo中的todoApp来举例，我们先实现一个简单的reducer用来添加一个todo:</p><pre><code class="javascript">    const todoApp = (state = &#123;todo: []&#125;, action) =&gt; &#123;        if (action.type === &#39;addTodo&#39;) &#123;            state.todo = [...state.todo, action.value]        &#125;        return state    &#125;</code></pre><p>然后再补上其他逻辑测试，用最原始的方法实现将每次action的执行信息log出来：</p><pre><code class="javascript">    const redux = require(&#39;redux&#39;)    const todoApp = (state = &#123;todo: []&#125;, action) =&gt; &#123;        if (action.type === &#39;addTodo&#39;) &#123;            state.todo = [...state.todo, action.value]        &#125;        return state    &#125;    let store = redux.createStore(todoApp);    const action = &#123;        type: &#39;addTodo&#39;,        value: &#39;todo&#39;,    &#125;    console.log(&#39;state: &#39;, store.getState());    console.log(&#39;action: &#39;, action);    store.dispatch(action)    console.log(&#39;next state: &#39;, store.getState())</code></pre><p>如果不出什么意外的话，我们这段代码应该会成功运行，并且将这段log出这个action的运行情况， 如下图：<img src="/images/reduxMiddleware/noMiddlewarelogout.png" alt="noMiddlewarelogout.png"></p><p>接下来我们将log这件事尝试使用redux的middleware来完成。</p><ol><li><p>首先，根据我们之前的了解，middleware其实是一段在action到reducer之间的处理逻辑。我们都知道，标准的一个redux发送一个action是调用store自身的<code>dispatch</code>方法。那么，我们想要在一个action到达reducer之前去做些处理的话，最好的地方应该就是尝试将store的<code>dispatch</code>替换为我们自己的，在其中加上我们的处理逻辑，例如打印log这件事。</p><pre><code class="javascript">    let store = redux.createStore(todoApp);    const next = store.dispatch;    const dispatchWithLog = (action) =&gt; &#123;        console.log(&#39;state: &#39;, store.getState());        console.log(&#39;action: &#39;, action);        next(action);        console.log(&#39;next state: &#39;, store.getState());    &#125;    store.dispatch = dispatchWithLog;</code></pre><p> 我们将默认store的<code>dispatch</code>替换为自己的<code>dispatchWithLog</code>, 通过这种方式，完成了我们的需求，只要任何地方调用了store的<code>diapatch</code>去发送新的action, 我们都能讲其log出来，这个看起来已经有一点middleware的意思了。</p></li><li><p>虽然上面已经可以解决问题了，并且已经有点middleware的意思了，但是还有一点硬伤就是，需求多了就比较难搞了，例如就像官方上既需要log又需要Crash Reporting, 再通过这种方式去处理就显得很不优雅。Crash Reporting的middle的一个简单实现如下：</p><pre><code class="javascript">    const next1 = store.dispatch;    const dispatchWithCreshReporting = (action) =&gt; &#123;        try &#123;            next1(action);        &#125; catch (err) &#123;            console.error(err);        &#125;    &#125;    store.dispatch = dispatchWithCreshReporting;</code></pre><p> 我们在log之后加上这段代码, 其实就是在log那件事替换完之后，我们再次替换store上的<code>dispatch</code>，其实这个时候，我们拿到的<code>next1</code>已经是log那个替换过后的<code>dispatch</code>方法了，里面有打印log的逻辑，所以，我们在后面通过<code>store.dispatch</code>去发送action时，每一个action都会先经过Crash Reporting包装的<code>dispacth</code>方法（其中包含了Crash Report的逻辑），然后再经过log包装过后的<code>dispatch</code>方法（其中包含了打印log的逻辑）。这其实就是redux middleware的基本思想。</p></li><li><p>当然，redux本身给我们提供了包装过后的工具方法来专门应用middleware。其中也不是简单粗暴的替换store上的dispatch了。这个方法即为<code>applyMiddleware</code>。</p></li><li><p>官方的doc也给出了一个关于<code>applyMiddleware</code>的一个简单粗暴的直接替换<code>dispatch</code>的一个示例，如下：</p><pre><code class="javascript">    function applyMiddlewareByMonkeypatching(store, middlewares) &#123;        middlewares = middlewares.slice()        middlewares.reverse()    ​        // Transform dispatch function with each middleware.        middlewares.forEach(middleware =&gt;            store.dispatch = middleware(store)        )    &#125;</code></pre><p> 关于先逆序middlewares再进行替换，这里主要是为了，让middleware的执行顺序按照我么传给他的array顺序来进行。就像我们上面直接替换的那个例子，越往后面进行替换<code>dispatch</code>的在执行过程中先运行。</p></li><li><p>当然，官放的具体实现中不是这么简单粗暴的直接替换的方式，因为一来不够优雅，这种方式在链式的调用过程中有可能出现问题。比如某一个middleware并不是同步执行的，这样在进行<code>store.dispatch = middleware(store)</code>就有可能到下一个middleware时，<code>store.dispatch</code>还没有被替换。因此，官方的middleware是接受一个<code>next</code>的参数来，来拿到dispatch，并不是直接从store上对dispatch进行操作的。</p></li><li><p>一般一个标准的middleware是这个样子的，我们使用最初的log的那个middleware来举例，让它接受一个<code>next</code>(就是一个下一个的dispatch方法)，再返回一个<code>dispatch</code>方法。</p><pre><code class="javascript">    function logger(store) &#123;        return function(next) &#123;            return function(action) &#123;                console.log(&#39;state: &#39;, store.getState());                console.log(&#39;action: &#39;, action);                let result = next(action);                console.log(&#39;next state: &#39;, store.getState());                return result;            &#125;        &#125;    &#125;    function creshReporting(store) &#123;        return function(next) &#123;            return function(action) &#123;                try &#123;                    return next(action);                &#125; catch (err) &#123;                    console.error(err);                    return next;                &#125;            &#125;        &#125;    &#125;</code></pre><p> 然后假设我们在apply时这样应用一下：</p><pre><code class="javascript">    function applyMiddleware(store, middlewares = [logger, crashReporting]) &#123;        middlewares = middlewares.slice()        middlewares.reverse()        let dispatch = store.dispatch        middlewares.forEach(middleware =&gt;            dispatch = middleware(store)(dispatch)        )        return Object.assign(&#123;&#125;, store, &#123; dispatch &#125;)    &#125;</code></pre><p> 这样就能够进行优雅的链式调用了。并且用上ES6箭头函数后，这样写出来会更加的优雅：</p><pre><code class="javascript">    const logger = store =&gt; next =&gt; action =&gt; &#123;        console.log(&#39;state: &#39;, store.getState());        console.log(&#39;action: &#39;, action);        let result = next(action);        console.log(&#39;next state: &#39;, store.getState());        return result;    &#125;</code></pre></li><li><p>最后，其实redux middleware使用起来其实是非常的方便的，只需要记住<code>applyMiddleware</code>这个API即可。即<code>const store = createStore(reducer, applyMiddleware(middlewares))</code></p></li></ol><p>Reference： <a href="https://redux.js.org/advanced/middleware">Redux Middleware Doc</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Redux, Middleware </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Blog Cookbook</title>
+      <link href="/2018/05/26/blog-cookbook/"/>
+      <url>/2018/05/26/blog-cookbook/</url>
+      
+        <content type="html"><![CDATA[<p>为了防止以后忘记怎么使用，很有必要在这里将基础步骤都记录下来</p><ol><li><p>原材料</p><pre><code class="bash">Node.jsGitHexo</code></pre></li><li><p>基础环境配置</p><ul><li>安装<a href="https://nodejs.org/en/download/">Node</a></li><li>安装<a href="https://git-scm.com/downloads">Git</a></li><li>安装 <code>hexo</code> (建议全局安装，使用以下命令), <a href="https://hexo.io/docs/">Hexo文档以及简介。</a><pre><code class="bash">  npm install -g hexo-cli</code></pre></li></ul></li><li><p>个性化定制</p><p> Theme: <a href="https://material.viosey.com/">material</a></p></li><li><p>基础常用命令</p><ul><li><code>hexo new [layout] title</code> 生成新的markdown源文件</li><li><code>hexo generate</code> 从原始文件生成静态页面</li><li><code>hexo server</code> 启动一个简单的本地server，可以方便的查看效果</li><li><code>hexo depoly</code> 将生成好的静态页面上传</li></ul><p> 所有的命令都可以简写，直接使用首字母就可以了。 例如： <code>hexo n [layout] title</code></p></li><li><p>一般流程</p><ul><li>生成新文章。 <code>hexo n</code></li><li>生成静态页面。<code>hexo g</code></li><li>启动个server看看效果。 <code>hexo server</code></li><li>觉得哪不爽了再改改， 重新生成下，看看效果。</li><li>觉得还不错了，就可以发布了。 <code>hexo d</code></li></ul></li><li><p>Deploy相关</p><ul><li>配置下站点的<code>_config.yml</code><pre><code class="yml">  deploy:  type: git  repo: (repo url)</code></pre></li><li>安装个push到git的小工具 <code>npm install hexo-deployer-git --save</code></li></ul></li></ol>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Hexo,Github,Blog,Cookbook </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>The First Thing</title>
+      <link href="/2018/05/26/the-first-thing/"/>
+      <url>/2018/05/26/the-first-thing/</url>
+      
+        <content type="html"><![CDATA[<p>时隔一段时间重新整理博客，发现之前的原始文件由于没有上传的原因已经没办法重新找回了，凉凉o(╥﹏╥)o<br>所以这次重新开始前先在这里提醒一下， 如果使用hexo生成博客文章，一定要记得将原始的博客文章也<b>一并上传或者找个其他的地方备份!!!</b></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+  
+  
+</search>
