@@ -115,13 +115,13 @@
                 
                 <span>
                     <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    4k
+                    14k
                 </span>
                 
                 
                 <span>
                     <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                    4 mins.
+                    12 mins.
                 </span>
                 
                 
@@ -258,7 +258,273 @@ module.exports = &#123;
   &#125;,
 &#125;;
 </code></pre>
-<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><h2 id="一些限制和不足"><a href="#一些限制和不足" class="headerlink" title="一些限制和不足"></a>一些限制和不足</h2><p>未完待续……</p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><h4 id="加载方式——HTML-Entry"><a href="#加载方式——HTML-Entry" class="headerlink" title="加载方式——HTML Entry"></a>加载方式——HTML Entry</h4><p>qiankun使用独立的处理库<a target="_blank" rel="noopener" href="https://github.com/kuitos/import-html-entry#readme">import-html-entry</a></p>
+<pre><code class="typescript">export async function loadApp&lt;T extends ObjectType&gt;(
+  app: LoadableApp&lt;T&gt;,
+  configuration: FrameworkConfiguration = &#123;&#125;,
+  lifeCycles?: FrameworkLifeCycles&lt;T&gt;,
+): Promise&lt;ParcelConfigObjectGetter&gt; &#123;
+  const &#123; entry, name: appName &#125; = app;
+  const appInstanceId = genAppInstanceIdByName(appName);
+
+  const markName = `[qiankun] App $&#123;appInstanceId&#125; Loading`;
+  if (process.env.NODE_ENV === &#39;development&#39;) &#123;
+    performanceMark(markName);
+  &#125;
+
+  const &#123;
+    singular = false,
+    sandbox = true,
+    excludeAssetFilter,
+    globalContext = window,
+    ...importEntryOpts
+  &#125; = configuration;
+
+  // get the entry html content and script executor
+  /*
+  1. template 处理后的html
+  2. execScripts 执行脚本
+  3. assetPublicPath 公共路径
+  */
+  const &#123; template, execScripts, assetPublicPath &#125; = await importEntry(entry, importEntryOpts);
+  ///...
+&#125;
+</code></pre>
+<h4 id="JS沙箱实现方式"><a href="#JS沙箱实现方式" class="headerlink" title="JS沙箱实现方式"></a>JS沙箱实现方式</h4><p>qiankun中采取了两种方式来支持JS沙箱</p>
+<ol>
+<li>不支持Proxy的，则简单的讲window备份一个，使用完后恢复</li>
+<li>支持Proxy的，使用Proxy后的window作为全局对象，get从window上获取，set不往window上设置</li>
+</ol>
+<pre><code class="typescript">export function createSandboxContainer(
+  appName: string,
+  elementGetter: () =&gt; HTMLElement | ShadowRoot,
+  scopedCSS: boolean,
+  useLooseSandbox?: boolean,
+  excludeAssetFilter?: (url: string) =&gt; boolean,
+  globalContext?: typeof window,
+) &#123;
+  let sandbox: SandBox;
+  if (window.Proxy) &#123;
+    sandbox = useLooseSandbox ? new LegacySandbox(appName, globalContext) : new ProxySandbox(appName, globalContext);
+  &#125; else &#123;
+    sandbox = new SnapshotSandbox(appName);
+  &#125;
+  //...
+&#125;
+</code></pre>
+<p>通过Snapshot方式实现沙箱</p>
+<pre><code class="typescript">export default class SnapshotSandbox implements SandBox &#123;
+  proxy: WindowProxy;
+
+  name: string;
+
+  type: SandBoxType;
+
+  sandboxRunning = true;
+
+  private windowSnapshot!: Window;
+
+  private modifyPropsMap: Record&lt;any, any&gt; = &#123;&#125;;
+
+  constructor(name: string) &#123;
+    this.name = name;
+    this.proxy = window;
+    this.type = SandBoxType.Snapshot;
+  &#125;
+
+  active() &#123;
+    // 记录当前快照
+    this.windowSnapshot = &#123;&#125; as Window;
+    iter(window, (prop) =&gt; &#123;
+      this.windowSnapshot[prop] = window[prop];
+    &#125;);
+
+    // 恢复之前的变更
+    Object.keys(this.modifyPropsMap).forEach((p: any) =&gt; &#123;
+      window[p] = this.modifyPropsMap[p];
+    &#125;);
+
+    this.sandboxRunning = true;
+  &#125;
+
+  inactive() &#123;
+    this.modifyPropsMap = &#123;&#125;;
+
+    iter(window, (prop) =&gt; &#123;
+      if (window[prop] !== this.windowSnapshot[prop]) &#123;
+        // 记录变更，恢复环境
+        this.modifyPropsMap[prop] = window[prop];
+        window[prop] = this.windowSnapshot[prop];
+      &#125;
+    &#125;);
+
+    if (process.env.NODE_ENV === &#39;development&#39;) &#123;
+      console.info(`[qiankun:sandbox] $&#123;this.name&#125; origin window restore...`, Object.keys(this.modifyPropsMap));
+    &#125;
+
+    this.sandboxRunning = false;
+  &#125;
+&#125;
+</code></pre>
+<p>使用snapshot创建沙箱环境的基本原理为，使用之前对当前上下文做快照，使用完成之后再从快照恢复上下文。因此，这种方式创建的沙箱其实在生效的过程中，所有对于上下文的操作其实都是在window上进行的，也正是这种原理，决定了使用这种方式创建的沙箱，同时间只能存在一个激活的，不能同时开启，映射到微前端中也就意味着同时只能激活一个微应用。</p>
+<p>通过Proxy实现JS沙箱</p>
+<pre><code class="TYPESCRIPT">export default class ProxySandbox implements SandBox &#123;
+  //...
+  const proxy = new Proxy(fakeWindow, &#123;
+      // set时给fakeWindow设置
+      set: (target: FakeWindow, p: PropertyKey, value: any): boolean =&gt; &#123;
+        if (this.sandboxRunning) &#123;
+          this.registerRunningApp(name, proxy);
+          // We must kept its description while the property existed in globalContext before
+          if (!target.hasOwnProperty(p) &amp;&amp; globalContext.hasOwnProperty(p)) &#123;
+            const descriptor = Object.getOwnPropertyDescriptor(globalContext, p);
+            const &#123; writable, configurable, enumerable &#125; = descriptor!;
+            if (writable) &#123;
+              Object.defineProperty(target, p, &#123;
+                configurable,
+                enumerable,
+                writable,
+                value,
+              &#125;);
+            &#125;
+          &#125; else &#123;
+            // @ts-ignore
+            target[p] = value;
+          &#125;
+
+          if (variableWhiteList.indexOf(p) !== -1) &#123;
+            // @ts-ignore
+            globalContext[p] = value;
+          &#125;
+
+          updatedValueSet.add(p);
+
+          this.latestSetProp = p;
+
+          return true;
+        &#125;
+
+        if (process.env.NODE_ENV === &#39;development&#39;) &#123;
+          console.warn(`[qiankun] Set window.$&#123;p.toString()&#125; while sandbox destroyed or inactive in $&#123;name&#125;!`);
+        &#125;
+
+        // 在 strict-mode 下，Proxy 的 handler.set 返回 false 会抛出 TypeError，在沙箱卸载的情况下应该忽略错误
+        return true;
+      &#125;,
+
+      // get时先从FakeWindow上获取，如果获取不到则去Window上获取
+      get: (target: FakeWindow, p: PropertyKey): any =&gt; &#123;
+        this.registerRunningApp(name, proxy);
+
+        if (p === Symbol.unscopables) return unscopables;
+        // avoid who using window.window or window.self to escape the sandbox environment to touch the really window
+        // see https://github.com/eligrey/FileSaver.js/blob/master/src/FileSaver.js#L13
+        if (p === &#39;window&#39; || p === &#39;self&#39;) &#123;
+          return proxy;
+        &#125;
+
+        // hijack globalWindow accessing with globalThis keyword
+        if (p === &#39;globalThis&#39;) &#123;
+          return proxy;
+        &#125;
+
+        if (
+          p === &#39;top&#39; ||
+          p === &#39;parent&#39; ||
+          (process.env.NODE_ENV === &#39;test&#39; &amp;&amp; (p === &#39;mockTop&#39; || p === &#39;mockSafariTop&#39;))
+        ) &#123;
+          // if your master app in an iframe context, allow these props escape the sandbox
+          if (globalContext === globalContext.parent) &#123;
+            return proxy;
+          &#125;
+          return (globalContext as any)[p];
+        &#125;
+
+        // proxy.hasOwnProperty would invoke getter firstly, then its value represented as globalContext.hasOwnProperty
+        if (p === &#39;hasOwnProperty&#39;) &#123;
+          return hasOwnProperty;
+        &#125;
+
+        if (p === &#39;document&#39;) &#123;
+          return document;
+        &#125;
+
+        if (p === &#39;eval&#39;) &#123;
+          return eval;
+        &#125;
+
+        const value = propertiesWithGetter.has(p)
+          ? (globalContext as any)[p]
+          : p in target
+          ? (target as any)[p]
+          : (globalContext as any)[p];
+        /* Some dom api must be bound to native window, otherwise it would cause exception like &#39;TypeError: Failed to execute &#39;fetch&#39; on &#39;Window&#39;: Illegal invocation&#39;
+           See this code:
+             const proxy = new Proxy(window, &#123;&#125;);
+             const proxyFetch = fetch.bind(proxy);
+             proxyFetch(&#39;https://qiankun.com&#39;);
+        */
+        const boundTarget = useNativeWindowForBindingsProps.get(p) ? nativeGlobal : globalContext;
+        return getTargetValue(boundTarget, value);
+      &#125;,
+    &#125;);
+
+    this.proxy = proxy;
+    //...
+&#125;
+</code></pre>
+<h4 id="样式隔离"><a href="#样式隔离" class="headerlink" title="样式隔离"></a>样式隔离</h4><p>创建appWrapper时做了特殊处理</p>
+<ol>
+<li>使用strictStyleIsolation使用shadowDOM</li>
+<li>使用experimentalStyleIsolation，在appElement上添加前缀遍历所有css添加前缀</li>
+</ol>
+<pre><code class="typescript">function createElement(
+  appContent: string,
+  strictStyleIsolation: boolean,
+  scopedCSS: boolean,
+  appInstanceId: string,
+): HTMLElement &#123;
+  const containerElement = document.createElement(&#39;div&#39;);
+  containerElement.innerHTML = appContent;
+  // appContent always wrapped with a singular div
+  const appElement = containerElement.firstChild as HTMLElement;
+  if (strictStyleIsolation) &#123;
+    if (!supportShadowDOM) &#123;
+      console.warn(
+        &#39;[qiankun]: As current browser not support shadow dom, your strictStyleIsolation configuration will be ignored!&#39;,
+      );
+    &#125; else &#123;
+      const &#123; innerHTML &#125; = appElement;
+      appElement.innerHTML = &#39;&#39;;
+      let shadow: ShadowRoot;
+
+      if (appElement.attachShadow) &#123;
+        shadow = appElement.attachShadow(&#123; mode: &#39;open&#39; &#125;);
+      &#125; else &#123;
+        // createShadowRoot was proposed in initial spec, which has then been deprecated
+        shadow = (appElement as any).createShadowRoot();
+      &#125;
+      shadow.innerHTML = innerHTML;
+    &#125;
+  &#125;
+
+  if (scopedCSS) &#123;
+    const attr = appElement.getAttribute(css.QiankunCSSRewriteAttr);
+    if (!attr) &#123;
+      appElement.setAttribute(css.QiankunCSSRewriteAttr, appInstanceId);
+    &#125;
+
+    const styleNodes = appElement.querySelectorAll(&#39;style&#39;) || [];
+    forEach(styleNodes, (stylesheetElement: HTMLStyleElement) =&gt; &#123;
+      css.process(appElement!, stylesheetElement, appInstanceId);
+    &#125;);
+  &#125;
+
+  return appElement;
+&#125;
+</code></pre>
+<h2 id="Demo演示"><a href="#Demo演示" class="headerlink" title="Demo演示"></a>Demo演示</h2><p><a target="_blank" rel="noopener" href="https://github.com/TheScenery/micro-frontend-basement">Qiankun微前端演示项目</a></p>
+<p><img src="/images/qiankun/qiankunDemo.png" alt="QiankunDemo"></p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls"
@@ -322,7 +588,7 @@ module.exports = &#123;
             <div class="box sticky animated fadeInRight faster">
                 <div id="toc" class="subbox">
                     <h4>目录</h4>
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">微前端的核心思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="toc-number">2.</span> <span class="toc-text">微前端的价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#qiankun-%E4%B9%BE%E5%9D%A4-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">qiankun (乾坤)是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="toc-number">4.</span> <span class="toc-text">如何工作的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">使用方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">4.2.</span> <span class="toc-text">实现原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E9%99%90%E5%88%B6%E5%92%8C%E4%B8%8D%E8%B6%B3"><span class="toc-number">5.</span> <span class="toc-text">一些限制和不足</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">微前端的核心思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="toc-number">2.</span> <span class="toc-text">微前端的价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#qiankun-%E4%B9%BE%E5%9D%A4-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">qiankun (乾坤)是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="toc-number">4.</span> <span class="toc-text">如何工作的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">使用方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">4.2.</span> <span class="toc-text">实现原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Demo%E6%BC%94%E7%A4%BA"><span class="toc-number">5.</span> <span class="toc-text">Demo演示</span></a></li></ol>
                 </div>
             </div>
             
