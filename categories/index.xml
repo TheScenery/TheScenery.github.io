@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on TheScenery&#39;s Blog</title>
+    <link>https://thescenery.github.io/categories/</link>
+    <description>Recent content in Categories on TheScenery&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 25 Jun 2022 11:14:24 +0000</lastBuildDate><atom:link href="https://thescenery.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>学习</title>
+      <link>https://thescenery.github.io/categories/%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Sat, 25 Jun 2022 11:14:24 +0000</pubDate>
+      
+      <guid>https://thescenery.github.io/categories/%E5%AD%A6%E4%B9%A0/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>博客搭建</title>
+      <link>https://thescenery.github.io/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Sat, 26 May 2018 14:05:46 +0000</pubDate>
+      
+      <guid>https://thescenery.github.io/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

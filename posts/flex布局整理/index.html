@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>Flex布局整理 | TheScenery&#39;s Blog</title>
+<link rel="canonical" href="https://thescenery.github.io/posts/flex%E5%B8%83%E5%B1%80%E6%95%B4%E7%90%86/">
+<meta name="description" content="Flex布局，即为“弹性布局”，只要有两个基本的概念，容器、成员。" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Flex布局整理 | TheScenery&#39;s Blog" />
+<meta property="og:url" content="https://thescenery.github.io/posts/flex%E5%B8%83%E5%B1%80%E6%95%B4%E7%90%86/" />
+<meta property="og:description" content="Flex布局，即为“弹性布局”，只要有两个基本的概念，容器、成员。" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    </head>
+
+    <body>
+        <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="https://thescenery.github.io/">TheScenery&#39;s Blog</a>
+
+        <nav class="menu">
+            
+        </nav>
+    </div>
+</header>
+
+        <main class="main-wrapper">
+            <div class="main">
+                
+
+<section class="single">
+    <h1 class="title">Flex布局整理</h1>
+
+    <div class="tip">
+        <time datetime="2018-06-16 15:06:27 &#43;0000 UTC">2018/06/16</time>
+        <span class="split">·</span>
+        <span> 99 words </span>
+        <span class="split">·</span>
+        <span>
+            1 minutes to read
+        </span>
+    </div>
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习</a>
+            
+        </div>
+        
+
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <p>Flex布局，即为“弹性布局”，只要有两个基本的概念，容器、成员。
+<img src="/images/flex/flexbox.png" alt="middleware-data-flow"></p>
+<p>使用flex布局模型，首先需要将Container设置为<code>display: flex</code>， 注意， 设定了flex之后，成员的<code>float、clear</code>和<code>vertical-align</code>属性将失效</p>
+<p>Flex Container主要有以下属性可以设置：</p>
+<ol>
+<li>flex-direction</li>
+<li>justify-content</li>
+<li>align-items</li>
+<li>flex-wrap</li>
+<li>align-content</li>
+<li>flex-flow</li>
+</ol>
+<p>flex-direction: 主要用来决定成员在主坐标轴上的排列顺序，有以下四个取值：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span>    <span style="color:#f92672">row</span><span style="color:#f92672">:</span> <span style="color:#f92672">水平方向排列</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#f92672">从左边开始</span><span style="color:#960050;background-color:#1e0010">。</span> <span style="color:#f92672">默认值</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">row-reverse</span><span style="color:#f92672">:</span> <span style="color:#f92672">水平方向排列</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#f92672">从右边开始</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">column</span><span style="color:#f92672">:</span> <span style="color:#f92672">垂直方向排列</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#f92672">从上面开始</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">column-reverse</span><span style="color:#f92672">:</span> <span style="color:#f92672">垂直方向排列</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#f92672">从下面开始</span>
+</span></span></code></pre></div><p>justify-content：决定在主坐标轴上，里面的成员如何分布。可选值非常多：但是，常用的只有这几个：</p>
+<pre tabindex="0"><code>    center: 居中对齐
+    space-between: 均匀排列每个元素,首个元素放置于起点，末尾元素放置终点
+    space-around: 均匀排列每个元素, 每个元素周围分配相同的空间
+    space-evenly: 均匀排列每个元素, 每个元素之间的间隔相等
+    flex-start: 从行首起始位置开始排列
+    flex-end: 从行尾位置开始排列
+</code></pre><p>align-items: 决定成员在副坐标轴如何分布， 可选值一样很多，常用的几个：</p>
+<pre tabindex="0"><code>    center: 局中对齐
+    stretch： 占满高度。 默认值
+    flex-start： 起点对齐
+    flex-end: 终点对齐
+</code></pre><p>flex-wrap： 定义flex成员是否允许在副坐标轴上折行：</p>
+<pre tabindex="0"><code>    nowrap: 不折行
+    wrap： 自动折行，向后插行
+    wrap-reverse： 自动折行，向前插行
+</code></pre><p>align-content：决定，如果有多行时，他们之间如何对齐。类似于<code>justfy-content</code>的取值，只不过是定义的是在副坐标轴上多行之间的分布方式。</p>
+<p>flex-flow：<code>flex-direction</code> 和 <code>flex-wrap</code> 的简写</p>
+<p>Flex成员的属性：</p>
+<ol>
+<li>flex-grow</li>
+<li>flex-shrink</li>
+<li>flex-basis</li>
+<li>flex</li>
+<li>align-self</li>
+</ol>
+<p>flex-grow： 放大因子， 默认值为0， 既即使有剩余空间，也不放大。取值自然数</p>
+<p>flex-shrink： 所小因子，默认值1，所以空间不够时，会缩小， 取值也为自然数</p>
+<p>flex-basis： 指定了 flex 元素在主轴方向上的初始大小， 默认值为auto， 即原本大小</p>
+<p>flex: 这是一个简写属性，可以同时设置flex-grow, flex-shrink与flex-basis。</p>
+<p>align-self: 覆盖 align-items 的值, 即自己设置自己的在副坐标轴方向对齐方式。如果任何 flex 元素的侧轴方向 margin 值设置为 auto，则会忽略 align-self。</p>
+
+    </div>
+
+    
+</section>
+
+
+            </div>
+            <div class="side">
+                
+                    <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%8E%AB%E5%90%8D%E5%85%B6%E5%A6%99%E7%9A%84%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B4%A9%E6%BA%83/">记一次莫名其妙的前端页面崩溃</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/">微前端框架之qiankun初探</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/">如何发布一个go package</a>
+            </li>
+        
+            <li>
+                <a href="/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">JavaScript内存泄漏</a>
+            </li>
+        
+            <li>
+                <a href="/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/">css动画之transition和animation</a>
+            </li>
+        
+    </ul>
+</div>
+
+                
+                <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA">博客搭建(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习(3)</a>
+            </li>
+        
+    </ul>
+</div>
+
+                <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/blog">blog (2)</a>
+            </li>
+        
+    </ul>
+</div>
+
+            </div>
+        </main>
+        <footer class="footer">
+    <div class="footer-row">
+        
+            
+            
+                <a class="footer-item" href="https://thescenery.github.io/posts/index.xml">
+                    Feed of Posts
+                    <i class="icofont-rss"></i>
+                </a>
+            
+        
+
+        
+            
+            
+        
+    </div>
+
+    
+</footer>
+
+    </body>
+</html>

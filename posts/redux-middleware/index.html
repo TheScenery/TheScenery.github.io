@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>学习理解Redux Middleware | TheScenery&#39;s Blog</title>
+<link rel="canonical" href="https://thescenery.github.io/posts/redux-middleware/">
+<meta name="description" content="Redux中的middleware其实就像是给你提供一个在action发出到实际reducer执行之前处理一些事情的机会" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="学习理解Redux Middleware | TheScenery&#39;s Blog" />
+<meta property="og:url" content="https://thescenery.github.io/posts/redux-middleware/" />
+<meta property="og:description" content="Redux中的middleware其实就像是给你提供一个在action发出到实际reducer执行之前处理一些事情的机会" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    </head>
+
+    <body>
+        <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="https://thescenery.github.io/">TheScenery&#39;s Blog</a>
+
+        <nav class="menu">
+            
+        </nav>
+    </div>
+</header>
+
+        <main class="main-wrapper">
+            <div class="main">
+                
+
+<section class="single">
+    <h1 class="title">学习理解Redux Middleware</h1>
+
+    <div class="tip">
+        <time datetime="2018-05-27 12:33:20 &#43;0000 UTC">2018/05/27</time>
+        <span class="split">·</span>
+        <span> 299 words </span>
+        <span class="split">·</span>
+        <span>
+            2 minutes to read
+        </span>
+    </div>
+
+    <div class="taxonomies">
+        
+
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <p>Redux中的middleware其实就像是给你提供一个在action发出到实际reducer执行之前处理一些事情的机会。可以允许我们添加自己的逻辑在这段当中。<!-- raw HTML omitted -->它提供的是位于 action 被发起之后，到达 reducer 之前的扩展点。<!-- raw HTML omitted --></p>
+<p>加入middleware后，整个数据的流动如下图所示：<img src="/images/reduxMiddleware/reduxmiddleware.png" alt="middleware-data-flow"></p>
+<p>举个简单的例子，我们使用middleware将每次action的执行详细信息都打出来。就用官方demo中的todoApp来举例，我们先实现一个简单的reducer用来添加一个todo:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">todoApp</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">state</span> <span style="color:#f92672">=</span> {<span style="color:#a6e22e">todo</span><span style="color:#f92672">:</span> []}, <span style="color:#a6e22e">action</span>) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">action</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;addTodo&#39;</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">todo</span> <span style="color:#f92672">=</span> [...<span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">todo</span>, <span style="color:#a6e22e">action</span>.<span style="color:#a6e22e">value</span>]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">state</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>然后再补上其他逻辑测试，用最原始的方法实现将每次action的执行信息log出来：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">redux</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;redux&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">todoApp</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">state</span> <span style="color:#f92672">=</span> {<span style="color:#a6e22e">todo</span><span style="color:#f92672">:</span> []}, <span style="color:#a6e22e">action</span>) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">action</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;addTodo&#39;</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">todo</span> <span style="color:#f92672">=</span> [...<span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">todo</span>, <span style="color:#a6e22e">action</span>.<span style="color:#a6e22e">value</span>]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">state</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">store</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">redux</span>.<span style="color:#a6e22e">createStore</span>(<span style="color:#a6e22e">todoApp</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">action</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;addTodo&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;todo&#39;</span>,
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;state: &#39;</span>, <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getState</span>());
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;action: &#39;</span>, <span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">dispatch</span>(<span style="color:#a6e22e">action</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;next state: &#39;</span>, <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getState</span>())
+</span></span></code></pre></div><p>如果不出什么意外的话，我们这段代码应该会成功运行，并且将这段log出这个action的运行情况， 如下图：<img src="/images/reduxMiddleware/noMiddlewarelogout.png" alt="noMiddlewarelogout.png"></p>
+<p>接下来我们将log这件事尝试使用redux的middleware来完成。</p>
+<ol>
+<li>
+<p>首先，根据我们之前的了解，middleware其实是一段在action到reducer之间的处理逻辑。我们都知道，标准的一个redux发送一个action是调用store自身的<code>dispatch</code>方法。那么，我们想要在一个action到达reducer之前去做些处理的话，最好的地方应该就是尝试将store的<code>dispatch</code>替换为我们自己的，在其中加上我们的处理逻辑，例如打印log这件事。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">store</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">redux</span>.<span style="color:#a6e22e">createStore</span>(<span style="color:#a6e22e">todoApp</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">dispatch</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dispatchWithLog</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">action</span>) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;state: &#39;</span>, <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getState</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;action: &#39;</span>, <span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">next</span>(<span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;next state: &#39;</span>, <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getState</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">dispatch</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">dispatchWithLog</span>;
+</span></span></code></pre></div><p>我们将默认store的<code>dispatch</code>替换为自己的<code>dispatchWithLog</code>, 通过这种方式，完成了我们的需求，只要任何地方调用了store的<code>diapatch</code>去发送新的action, 我们都能讲其log出来，这个看起来已经有一点middleware的意思了。</p>
+</li>
+<li>
+<p>虽然上面已经可以解决问题了，并且已经有点middleware的意思了，但是还有一点硬伤就是，需求多了就比较难搞了，例如就像官方上既需要log又需要Crash Reporting, 再通过这种方式去处理就显得很不优雅。Crash Reporting的middle的一个简单实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">next1</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">dispatch</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dispatchWithCreshReporting</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">action</span>) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">next1</span>(<span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#a6e22e">err</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">dispatch</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">dispatchWithCreshReporting</span>;
+</span></span></code></pre></div><p>我们在log之后加上这段代码, 其实就是在log那件事替换完之后，我们再次替换store上的<code>dispatch</code>，其实这个时候，我们拿到的<code>next1</code>已经是log那个替换过后的<code>dispatch</code>方法了，里面有打印log的逻辑，所以，我们在后面通过<code>store.dispatch</code>去发送action时，每一个action都会先经过Crash Reporting包装的<code>dispacth</code>方法（其中包含了Crash Report的逻辑），然后再经过log包装过后的<code>dispatch</code>方法（其中包含了打印log的逻辑）。这其实就是redux middleware的基本思想。</p>
+</li>
+<li>
+<p>当然，redux本身给我们提供了包装过后的工具方法来专门应用middleware。其中也不是简单粗暴的替换store上的dispatch了。这个方法即为<code>applyMiddleware</code>。</p>
+</li>
+<li>
+<p>官方的doc也给出了一个关于<code>applyMiddleware</code>的一个简单粗暴的直接替换<code>dispatch</code>的一个示例，如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">applyMiddlewareByMonkeypatching</span>(<span style="color:#a6e22e">store</span>, <span style="color:#a6e22e">middlewares</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">middlewares</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">middlewares</span>.<span style="color:#a6e22e">slice</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">middlewares</span>.<span style="color:#a6e22e">reverse</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">​</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Transform dispatch function with each middleware.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">middlewares</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">middleware</span> =&gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">dispatch</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">middleware</span>(<span style="color:#a6e22e">store</span>)
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>关于先逆序middlewares再进行替换，这里主要是为了，让middleware的执行顺序按照我么传给他的array顺序来进行。就像我们上面直接替换的那个例子，越往后面进行替换<code>dispatch</code>的在执行过程中先运行。</p>
+</li>
+<li>
+<p>当然，官放的具体实现中不是这么简单粗暴的直接替换的方式，因为一来不够优雅，这种方式在链式的调用过程中有可能出现问题。比如某一个middleware并不是同步执行的，这样在进行<code>store.dispatch = middleware(store)</code>就有可能到下一个middleware时，<code>store.dispatch</code>还没有被替换。因此，官方的middleware是接受一个<code>next</code>的参数来，来拿到dispatch，并不是直接从store上对dispatch进行操作的。</p>
+</li>
+<li>
+<p>一般一个标准的middleware是这个样子的，我们使用最初的log的那个middleware来举例，让它接受一个<code>next</code>(就是一个下一个的dispatch方法)，再返回一个<code>dispatch</code>方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">logger</span>(<span style="color:#a6e22e">store</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">action</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;state: &#39;</span>, <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getState</span>());
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;action: &#39;</span>, <span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">next</span>(<span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;next state: &#39;</span>, <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getState</span>());
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">creshReporting</span>(<span style="color:#a6e22e">store</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">action</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">next</span>(<span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">err</span>) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#a6e22e">err</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">next</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>然后假设我们在apply时这样应用一下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">applyMiddleware</span>(<span style="color:#a6e22e">store</span>, <span style="color:#a6e22e">middlewares</span> <span style="color:#f92672">=</span> [<span style="color:#a6e22e">logger</span>, <span style="color:#a6e22e">crashReporting</span>]) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">middlewares</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">middlewares</span>.<span style="color:#a6e22e">slice</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">middlewares</span>.<span style="color:#a6e22e">reverse</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">dispatch</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">dispatch</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">middlewares</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">middleware</span> =&gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">dispatch</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">middleware</span>(<span style="color:#a6e22e">store</span>)(<span style="color:#a6e22e">dispatch</span>)
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Object.<span style="color:#a6e22e">assign</span>({}, <span style="color:#a6e22e">store</span>, { <span style="color:#a6e22e">dispatch</span> })
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>这样就能够进行优雅的链式调用了。并且用上ES6箭头函数后，这样写出来会更加的优雅：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">logger</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">store</span> =&gt; <span style="color:#a6e22e">next</span> =&gt; <span style="color:#a6e22e">action</span> =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;state: &#39;</span>, <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getState</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;action: &#39;</span>, <span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">next</span>(<span style="color:#a6e22e">action</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;next state: &#39;</span>, <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getState</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div></li>
+<li>
+<p>最后，其实redux middleware使用起来其实是非常的方便的，只需要记住<code>applyMiddleware</code>这个API即可。即<code>const store = createStore(reducer, applyMiddleware(middlewares))</code></p>
+</li>
+</ol>
+<p>Reference： <a href="https://redux.js.org/advanced/middleware">Redux Middleware Doc</a></p>
+
+    </div>
+
+    
+</section>
+
+
+            </div>
+            <div class="side">
+                
+                    <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%8E%AB%E5%90%8D%E5%85%B6%E5%A6%99%E7%9A%84%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B4%A9%E6%BA%83/">记一次莫名其妙的前端页面崩溃</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/">微前端框架之qiankun初探</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/">如何发布一个go package</a>
+            </li>
+        
+            <li>
+                <a href="/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">JavaScript内存泄漏</a>
+            </li>
+        
+            <li>
+                <a href="/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/">css动画之transition和animation</a>
+            </li>
+        
+    </ul>
+</div>
+
+                
+                <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA">博客搭建(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习(3)</a>
+            </li>
+        
+    </ul>
+</div>
+
+                <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/blog">blog (2)</a>
+            </li>
+        
+    </ul>
+</div>
+
+            </div>
+        </main>
+        <footer class="footer">
+    <div class="footer-row">
+        
+            
+            
+                <a class="footer-item" href="https://thescenery.github.io/posts/index.xml">
+                    Feed of Posts
+                    <i class="icofont-rss"></i>
+                </a>
+            
+        
+
+        
+            
+            
+        
+    </div>
+
+    
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>Blog Cookbook | TheScenery&#39;s Blog</title>
+<link rel="canonical" href="https://thescenery.github.io/posts/blog-cookbook/">
+<meta name="description" content="为了防止以后忘记怎么使用，很有必要在这里将基础步骤都记录下来" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Blog Cookbook | TheScenery&#39;s Blog" />
+<meta property="og:url" content="https://thescenery.github.io/posts/blog-cookbook/" />
+<meta property="og:description" content="为了防止以后忘记怎么使用，很有必要在这里将基础步骤都记录下来" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    </head>
+
+    <body>
+        <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="https://thescenery.github.io/">TheScenery&#39;s Blog</a>
+
+        <nav class="menu">
+            
+        </nav>
+    </div>
+</header>
+
+        <main class="main-wrapper">
+            <div class="main">
+                
+
+<section class="single">
+    <h1 class="title">Blog Cookbook</h1>
+
+    <div class="tip">
+        <time datetime="2018-05-26 14:05:46 &#43;0000 UTC">2018/05/26</time>
+        <span class="split">·</span>
+        <span> 67 words </span>
+        <span class="split">·</span>
+        <span>
+            1 minutes to read
+        </span>
+    </div>
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA">博客搭建</a>
+            
+        </div>
+        
+
+        
+            <div>
+                Tags:
+                
+                    <a href="/tags/blog">Blog</a>
+                
+            </div>
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <p>为了防止以后忘记怎么使用，很有必要在这里将基础步骤都记录下来</p>
+<ol>
+<li>原材料</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>   Node.js
+</span></span><span style="display:flex;"><span>   Git
+</span></span><span style="display:flex;"><span>   Hexo
+</span></span></code></pre></div><ol start="2">
+<li>
+<p>基础环境配置</p>
+<ul>
+<li>安装<a href="https://nodejs.org/en/download/">Node</a></li>
+<li>安装<a href="https://git-scm.com/downloads">Git</a></li>
+<li>安装 <code>hexo</code> (建议全局安装，使用以下命令), <a href="https://hexo.io/docs/">Hexo文档以及简介。</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    npm install -g hexo-cli
+</span></span></code></pre></div></li>
+<li>
+<p>个性化定制</p>
+<p>Theme: <a href="https://material.viosey.com/">material</a></p>
+</li>
+<li>
+<p>基础常用命令</p>
+<ul>
+<li><code>hexo new [layout] title</code> 生成新的markdown源文件</li>
+<li><code>hexo generate</code> 从原始文件生成静态页面</li>
+<li><code>hexo server</code> 启动一个简单的本地server，可以方便的查看效果</li>
+<li><code>hexo depoly</code> 将生成好的静态页面上传</li>
+</ul>
+<p>所有的命令都可以简写，直接使用首字母就可以了。 例如： <code>hexo n [layout] title</code></p>
+</li>
+<li>
+<p>一般流程</p>
+<ul>
+<li>生成新文章。 <code>hexo n</code></li>
+<li>生成静态页面。<code>hexo g</code></li>
+<li>启动个server看看效果。 <code>hexo server</code></li>
+<li>觉得哪不爽了再改改， 重新生成下，看看效果。</li>
+<li>觉得还不错了，就可以发布了。 <code>hexo d</code></li>
+</ul>
+</li>
+<li>
+<p>Deploy相关</p>
+<ul>
+<li>配置下站点的<code>_config.yml</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span>    <span style="color:#f92672">deploy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">git</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">repo</span>: <span style="color:#ae81ff">(repo url)</span>
+</span></span></code></pre></div><ul>
+<li>安装个push到git的小工具 <code>npm install hexo-deployer-git --save</code></li>
+</ul>
+</li>
+</ol>
+
+    </div>
+
+    
+</section>
+
+
+            </div>
+            <div class="side">
+                
+                    <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%8E%AB%E5%90%8D%E5%85%B6%E5%A6%99%E7%9A%84%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B4%A9%E6%BA%83/">记一次莫名其妙的前端页面崩溃</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/">微前端框架之qiankun初探</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/">如何发布一个go package</a>
+            </li>
+        
+            <li>
+                <a href="/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">JavaScript内存泄漏</a>
+            </li>
+        
+            <li>
+                <a href="/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/">css动画之transition和animation</a>
+            </li>
+        
+    </ul>
+</div>
+
+                
+                <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA">博客搭建(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习(3)</a>
+            </li>
+        
+    </ul>
+</div>
+
+                <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/blog">blog (2)</a>
+            </li>
+        
+    </ul>
+</div>
+
+            </div>
+        </main>
+        <footer class="footer">
+    <div class="footer-row">
+        
+            
+            
+                <a class="footer-item" href="https://thescenery.github.io/posts/index.xml">
+                    Feed of Posts
+                    <i class="icofont-rss"></i>
+                </a>
+            
+        
+
+        
+            
+            
+        
+    </div>
+
+    
+</footer>
+
+    </body>
+</html>

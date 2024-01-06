@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>JavaScript内存泄漏 | TheScenery&#39;s Blog</title>
+<link rel="canonical" href="https://thescenery.github.io/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">
+<meta name="description" content="JavaScript内存泄漏，通俗来讲就是JavaScript申请的变量不能被GC回收。" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="JavaScript内存泄漏 | TheScenery&#39;s Blog" />
+<meta property="og:url" content="https://thescenery.github.io/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" />
+<meta property="og:description" content="JavaScript内存泄漏，通俗来讲就是JavaScript申请的变量不能被GC回收。" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    </head>
+
+    <body>
+        <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="https://thescenery.github.io/">TheScenery&#39;s Blog</a>
+
+        <nav class="menu">
+            
+        </nav>
+    </div>
+</header>
+
+        <main class="main-wrapper">
+            <div class="main">
+                
+
+<section class="single">
+    <h1 class="title">JavaScript内存泄漏</h1>
+
+    <div class="tip">
+        <time datetime="2021-04-13 20:31:28 &#43;0000 UTC">2021/04/13</time>
+        <span class="split">·</span>
+        <span> 33 words </span>
+        <span class="split">·</span>
+        <span>
+            1 minutes to read
+        </span>
+    </div>
+
+    <div class="taxonomies">
+        
+
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <p>JavaScript内存泄漏，通俗来讲就是JavaScript申请的变量不能被GC回收。</p>
+<h3 id="浏览器gc回收机制">浏览器GC回收机制 <a href="#%e6%b5%8f%e8%a7%88%e5%99%a8gc%e5%9b%9e%e6%94%b6%e6%9c%ba%e5%88%b6" class="anchor">🔗</a></h3><p>标记清除或者引用计数，而现代浏览器则都为标记清除类似的机制。</p>
+<p>标记清除顾名思义是一种分两阶段对对象进行垃圾回收的算法。</p>
+<p>第一阶段：标记。从根结点出发遍历对象，对访问过的对象打上标记，表示该对象可达。</p>
+<p>第二阶段：清除。对那些没有标记的对象进行回收，这样使得不能利用的空间能够重新被利用。</p>
+<p>因此，造成内存泄漏原因无非为，意外的造成了变量从根结点一直能够访问到这些变量。</p>
+<h3 id="内存泄漏可能的原因无非为不小心能把变量挂到根结点的方式">内存泄漏可能的原因(无非为不小心能把变量挂到根结点的方式) <a href="#%e5%86%85%e5%ad%98%e6%b3%84%e6%bc%8f%e5%8f%af%e8%83%bd%e7%9a%84%e5%8e%9f%e5%9b%a0%e6%97%a0%e9%9d%9e%e4%b8%ba%e4%b8%8d%e5%b0%8f%e5%bf%83%e8%83%bd%e6%8a%8a%e5%8f%98%e9%87%8f%e6%8c%82%e5%88%b0%e6%a0%b9%e7%bb%93%e7%82%b9%e7%9a%84%e6%96%b9%e5%bc%8f" class="anchor">🔗</a></h3><ol>
+<li>
+<p>意外写到了根结点上的变量</p>
+<p>这种一般是由于手残导致的，一般不太会发生。写的时候定义变量注意都加上 var let const</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">//别写这种代码就行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">a</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">123</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p>全局的事件监听</p>
+<p>事件监听一定记得及时取消，只要监听和摘取成对出现，一般不会出现太大的问题。</p>
+</li>
+<li>
+<p>setTimeOut，setInterval和requestAnimationFrame</p>
+<p>用完记得及时取消，保证成对出现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">setTimeOut</span>                <span style="color:#a6e22e">clearTimeout</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">setInterval</span>               <span style="color:#a6e22e">clearInterval</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">requestAnimationFrame</span>     <span style="color:#a6e22e">cancelAnimationFrame</span>
+</span></span></code></pre></div></li>
+<li>
+<p>闭包？并不会引起内存泄漏</p>
+<p>经过实际验证，现代浏览器中，必报并不会引起内脆泄漏。应该是个传说中的某个浏览器的BUG</p>
+</li>
+</ol>
+
+    </div>
+
+    
+</section>
+
+
+            </div>
+            <div class="side">
+                
+                    <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%8E%AB%E5%90%8D%E5%85%B6%E5%A6%99%E7%9A%84%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B4%A9%E6%BA%83/">记一次莫名其妙的前端页面崩溃</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/">微前端框架之qiankun初探</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/">如何发布一个go package</a>
+            </li>
+        
+            <li>
+                <a href="/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">JavaScript内存泄漏</a>
+            </li>
+        
+            <li>
+                <a href="/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/">css动画之transition和animation</a>
+            </li>
+        
+    </ul>
+</div>
+
+                
+                <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA">博客搭建(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习(3)</a>
+            </li>
+        
+    </ul>
+</div>
+
+                <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/blog">blog (2)</a>
+            </li>
+        
+    </ul>
+</div>
+
+            </div>
+        </main>
+        <footer class="footer">
+    <div class="footer-row">
+        
+            
+            
+                <a class="footer-item" href="https://thescenery.github.io/posts/index.xml">
+                    Feed of Posts
+                    <i class="icofont-rss"></i>
+                </a>
+            
+        
+
+        
+            
+            
+        
+    </div>
+
+    
+</footer>
+
+    </body>
+</html>

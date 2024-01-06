@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>css动画之transition和animation | TheScenery&#39;s Blog</title>
+<link rel="canonical" href="https://thescenery.github.io/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/">
+<meta name="description" content="transition和animation是两个在css中主要用来处理动画的属性，今天用到了，将使用过程中的一些疑惑和问题记录在这里。" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="css动画之transition和animation | TheScenery&#39;s Blog" />
+<meta property="og:url" content="https://thescenery.github.io/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/" />
+<meta property="og:description" content="transition和animation是两个在css中主要用来处理动画的属性，今天用到了，将使用过程中的一些疑惑和问题记录在这里。" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    </head>
+
+    <body>
+        <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="https://thescenery.github.io/">TheScenery&#39;s Blog</a>
+
+        <nav class="menu">
+            
+        </nav>
+    </div>
+</header>
+
+        <main class="main-wrapper">
+            <div class="main">
+                
+
+<section class="single">
+    <h1 class="title">css动画之transition和animation</h1>
+
+    <div class="tip">
+        <time datetime="2019-05-07 22:00:03 &#43;0000 UTC">2019/05/07</time>
+        <span class="split">·</span>
+        <span> 176 words </span>
+        <span class="split">·</span>
+        <span>
+            1 minutes to read
+        </span>
+    </div>
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习</a>
+            
+        </div>
+        
+
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <p>transition和animation是两个在css中主要用来处理动画的属性，今天用到了，将使用过程中的一些疑惑和问题记录在这里。</p>
+<h2 id="transition-使用方法">transition 使用方法 <a href="#transition-%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95" class="anchor">🔗</a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">transition</span><span style="color:#f92672">:</span> <span style="color:#f92672">property</span> <span style="color:#f92672">duration</span> <span style="color:#f92672">timing-function</span> <span style="color:#f92672">delay</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    property 过渡效果变化的属性，即这个属性的变化是一个过度效果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    duration 这个过度效果持续的时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    timing-function 变化速度的时间函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    delay 延迟多久之后这个效果才开始发生变化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#f92672">还可以分开为四个属性单独设置</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">transition-property</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">transition-duration</span> <span style="color:#f92672">//</span> <span style="color:#f92672">默认值0</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">transition-timing-function</span> <span style="color:#f92672">//</span> <span style="color:#f92672">默认值</span> <span style="color:#f92672">ease</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    一般都会用一些内置的时间函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: ease
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: ease-in
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: ease-out
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: ease-in-out
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: linear
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: cubic-bezier(0.1, 0.7, 1.0, 0.1)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: step-start
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: step-end
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: steps(4, end)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: ease, step-start, cubic-bezier(0.1, 0.7, 1.0, 0.1)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    transition-timing-function: inherit 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">transition-delay</span> <span style="color:#f92672">//</span> <span style="color:#f92672">默认值0</span>
+</span></span></code></pre></div><pre><code>一些小问题
+1. 那么问题来了，什么时候会触发这个效果呢？  
+设置的property的发生变化则触发这个效果。
+2. 发生的变化必须是确定的状态，才会触发。 
+比如height变为fitContent 则不会触发。遇到这种情况，可以是一个max-height来进行代替，将max-height设置为一个fitContent永远达不到的值，就可以用来模模拟自适应高度的变化了。
+</code></pre>
+<p><a href="https://jsfiddle.net/TheScenery/fmwqy4pr/24/">Height Demo</a></p>
+<h2 id="animation-使用方法">animation 使用方法 <a href="#animation-%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95" class="anchor">🔗</a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">animation</span><span style="color:#f92672">:</span> <span style="color:#f92672">name</span> <span style="color:#f92672">duration</span> <span style="color:#f92672">timing-function</span> <span style="color:#f92672">delay</span> <span style="color:#f92672">iteration-count</span> <span style="color:#f92672">direction</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#f92672">同样也可以每个都单独设置</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-name</span> <span style="color:#f92672">//</span> <span style="color:#f92672">规定需要绑定到选择器的</span> <span style="color:#f92672">keyframe</span> <span style="color:#f92672">名称</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-duration</span> <span style="color:#f92672">//</span> <span style="color:#f92672">规定完成动画所花费的时间</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#f92672">以秒或毫秒计</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#f92672">默认0</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#f92672">所以省略这一项往往会没有动画效果</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-timing-function</span> <span style="color:#f92672">//</span> <span style="color:#f92672">规定动画的速度曲线</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-delay</span> <span style="color:#f92672">//</span> <span style="color:#f92672">规定在动画开始之前的延迟</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-iteration-count</span> <span style="color:#f92672">//</span> <span style="color:#f92672">规定动画应该播放的次数</span><span style="color:#f92672">,</span><span style="color:#f92672">可以设置为无数次</span> <span style="color:#f92672">infinite</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-direction</span> <span style="color:#f92672">//</span> <span style="color:#f92672">规定是否应该轮流反向播放动画</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#f92672">可以设置一些反方向什么的</span><span style="color:#960050;background-color:#1e0010">。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#f92672">特殊的</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-fill-mode</span> <span style="color:#f92672">//</span><span style="color:#f92672">动画执行前后的样式</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-fill-mode</span><span style="color:#f92672">:</span> <span style="color:#f92672">none</span> <span style="color:#f92672">//</span><span style="color:#f92672">动画执行前后不改变任何样式</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-fill-mode</span><span style="color:#f92672">:</span> <span style="color:#f92672">forwards</span> <span style="color:#f92672">//</span><span style="color:#f92672">保持目标动画最后一帧的样式</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-fill-mode</span><span style="color:#f92672">:</span> <span style="color:#f92672">backwards</span> <span style="color:#f92672">//</span><span style="color:#f92672">保持目标动画第一帧的样式</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">animation-fill-mode</span><span style="color:#f92672">:</span> <span style="color:#f92672">both</span> <span style="color:#f92672">//</span><span style="color:#f92672">动画将会执行</span> <span style="color:#f92672">forwards</span> <span style="color:#f92672">和</span> <span style="color:#f92672">backwards</span> <span style="color:#f92672">执行的动作</span>
+</span></span></code></pre></div><p>animation-name keyframes？规定一些动画执行的关键帧，这个就可以比transition更加灵活的控制整个动画的过程</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span>@<span style="color:#66d9ef">keyframes</span> <span style="color:#f92672">scale</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">from</span> {
+</span></span><span style="display:flex;"><span>        trannsform: scale(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">to</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">transform</span>: scale(<span style="color:#ae81ff">1.8</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>@<span style="color:#66d9ef">keyframes</span> <span style="color:#f92672">scale</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">0</span><span style="color:#f92672">%</span> {
+</span></span><span style="display:flex;"><span>        trannsform: scale(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">30</span><span style="color:#f92672">%</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">transform</span>: scale(<span style="color:#ae81ff">1.8</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">80</span><span style="color:#f92672">%</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">transform</span>: scale(<span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以定义执行过重的一些元素样式，既能from to指定两个节点，也可以使用百分比来详细的设置各个时间阶段的变化。</p>
+<p>什么时候你执行动画？</p>
+<pre><code>1. 元素第一次加载的时候开始执行
+2. 元素已经加载完毕，直接通过JS给起设置动画，则在刚设置完后执行
+3. 想办法触发浏览器的重新布局，比如添加删除class， 设置deplay:none --&gt; display: flex.之类的变化。</code></pre>
+
+    </div>
+
+    
+</section>
+
+
+            </div>
+            <div class="side">
+                
+                    <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%8E%AB%E5%90%8D%E5%85%B6%E5%A6%99%E7%9A%84%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B4%A9%E6%BA%83/">记一次莫名其妙的前端页面崩溃</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/">微前端框架之qiankun初探</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/">如何发布一个go package</a>
+            </li>
+        
+            <li>
+                <a href="/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">JavaScript内存泄漏</a>
+            </li>
+        
+            <li>
+                <a href="/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/">css动画之transition和animation</a>
+            </li>
+        
+    </ul>
+</div>
+
+                
+                <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA">博客搭建(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习(3)</a>
+            </li>
+        
+    </ul>
+</div>
+
+                <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/blog">blog (2)</a>
+            </li>
+        
+    </ul>
+</div>
+
+            </div>
+        </main>
+        <footer class="footer">
+    <div class="footer-row">
+        
+            
+            
+                <a class="footer-item" href="https://thescenery.github.io/posts/index.xml">
+                    Feed of Posts
+                    <i class="icofont-rss"></i>
+                </a>
+            
+        
+
+        
+            
+            
+        
+    </div>
+
+    
+</footer>
+
+    </body>
+</html>

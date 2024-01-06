@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>如何发布一个go package | TheScenery&#39;s Blog</title>
+<link rel="canonical" href="https://thescenery.github.io/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/">
+<meta name="description" content="如何将自己所写的Go package开源并提供给别人使用？" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="如何发布一个go package | TheScenery&#39;s Blog" />
+<meta property="og:url" content="https://thescenery.github.io/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/" />
+<meta property="og:description" content="如何将自己所写的Go package开源并提供给别人使用？" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    </head>
+
+    <body>
+        <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="https://thescenery.github.io/">TheScenery&#39;s Blog</a>
+
+        <nav class="menu">
+            
+        </nav>
+    </div>
+</header>
+
+        <main class="main-wrapper">
+            <div class="main">
+                
+
+<section class="single">
+    <h1 class="title">如何发布一个go package</h1>
+
+    <div class="tip">
+        <time datetime="2022-01-22 00:16:40 &#43;0000 UTC">2022/01/22</time>
+        <span class="split">·</span>
+        <span> 20 words </span>
+        <span class="split">·</span>
+        <span>
+            1 minutes to read
+        </span>
+    </div>
+
+    <div class="taxonomies">
+        
+
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <p>如何将自己所写的Go package开源并提供给别人使用？</p>
+<h3 id="1-首先找到在代码托管平台创建一个仓库以github为例">1. 首先找到在代码托管平台创建一个仓库（以Github为例） <a href="#1-%e9%a6%96%e5%85%88%e6%89%be%e5%88%b0%e5%9c%a8%e4%bb%a3%e7%a0%81%e6%89%98%e7%ae%a1%e5%b9%b3%e5%8f%b0%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa%e4%bb%93%e5%ba%93%e4%bb%a5github%e4%b8%ba%e4%be%8b" class="anchor">🔗</a></h3><p><img src="/images/publishGoPackage/createRepository.png" alt="create-repository"></p>
+<h3 id="2-添加自己的package代码并且提交">2. 添加自己的package代码并且提交 <a href="#2-%e6%b7%bb%e5%8a%a0%e8%87%aa%e5%b7%b1%e7%9a%84package%e4%bb%a3%e7%a0%81%e5%b9%b6%e4%b8%94%e6%8f%90%e4%ba%a4" class="anchor">🔗</a></h3><h3 id="3-回到github该仓库中创建一个release">3. 回到github该仓库中创建一个release <a href="#3-%e5%9b%9e%e5%88%b0github%e8%af%a5%e4%bb%93%e5%ba%93%e4%b8%ad%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aarelease" class="anchor">🔗</a></h3><p><img src="/images/publishGoPackage/createRelease.png" alt="create-release"></p>
+<h3 id="4-填写release相关信息表明版本号">4. 填写release相关信息，表明版本号 <a href="#4-%e5%a1%ab%e5%86%99release%e7%9b%b8%e5%85%b3%e4%bf%a1%e6%81%af%e8%a1%a8%e6%98%8e%e7%89%88%e6%9c%ac%e5%8f%b7" class="anchor">🔗</a></h3><p><img src="/images/publishGoPackage/releaseInfo.png" alt="release-info"></p>
+<h3 id="5-发布成功可以使用go-get命令来使用你刚刚发布好的包了">5. 发布成功！可以使用<code>go get</code>命令来使用你刚刚发布好的包了 <a href="#5-%e5%8f%91%e5%b8%83%e6%88%90%e5%8a%9f%e5%8f%af%e4%bb%a5%e4%bd%bf%e7%94%a8go-get%e5%91%bd%e4%bb%a4%e6%9d%a5%e4%bd%bf%e7%94%a8%e4%bd%a0%e5%88%9a%e5%88%9a%e5%8f%91%e5%b8%83%e5%a5%bd%e7%9a%84%e5%8c%85%e4%ba%86" class="anchor">🔗</a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go get -u github.com/TheScenery/BoltCompact
+</span></span></code></pre></div>
+    </div>
+
+    
+</section>
+
+
+            </div>
+            <div class="side">
+                
+                    <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%8E%AB%E5%90%8D%E5%85%B6%E5%A6%99%E7%9A%84%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B4%A9%E6%BA%83/">记一次莫名其妙的前端页面崩溃</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/">微前端框架之qiankun初探</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/">如何发布一个go package</a>
+            </li>
+        
+            <li>
+                <a href="/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">JavaScript内存泄漏</a>
+            </li>
+        
+            <li>
+                <a href="/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/">css动画之transition和animation</a>
+            </li>
+        
+    </ul>
+</div>
+
+                
+                <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA">博客搭建(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习(3)</a>
+            </li>
+        
+    </ul>
+</div>
+
+                <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/blog">blog (2)</a>
+            </li>
+        
+    </ul>
+</div>
+
+            </div>
+        </main>
+        <footer class="footer">
+    <div class="footer-row">
+        
+            
+            
+                <a class="footer-item" href="https://thescenery.github.io/posts/index.xml">
+                    Feed of Posts
+                    <i class="icofont-rss"></i>
+                </a>
+            
+        
+
+        
+            
+            
+        
+    </div>
+
+    
+</footer>
+
+    </body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>微前端框架之qiankun初探 | TheScenery&#39;s Blog</title>
+<link rel="canonical" href="https://thescenery.github.io/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/">
+<meta name="description" content="微前端是可以用来构建能够让多个团队独立交付项目代码的现代web app 技术，策略以及实践方法" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="微前端框架之qiankun初探 | TheScenery&#39;s Blog" />
+<meta property="og:url" content="https://thescenery.github.io/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/" />
+<meta property="og:description" content="微前端是可以用来构建能够让多个团队独立交付项目代码的现代web app 技术，策略以及实践方法" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    </head>
+
+    <body>
+        <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="https://thescenery.github.io/">TheScenery&#39;s Blog</a>
+
+        <nav class="menu">
+            
+        </nav>
+    </div>
+</header>
+
+        <main class="main-wrapper">
+            <div class="main">
+                
+
+<section class="single">
+    <h1 class="title">微前端框架之qiankun初探</h1>
+
+    <div class="tip">
+        <time datetime="2022-06-25 11:14:24 &#43;0000 UTC">2022/06/25</time>
+        <span class="split">·</span>
+        <span> 1013 words </span>
+        <span class="split">·</span>
+        <span>
+            5 minutes to read
+        </span>
+    </div>
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习</a>
+            
+        </div>
+        
+
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <p>Techniques, strategies and recipes for building a <!-- raw HTML omitted -->modern web app<!-- raw HTML omitted --> with <!-- raw HTML omitted -->multiple teams<!-- raw HTML omitted --> that can <!-- raw HTML omitted -->ship features independently<!-- raw HTML omitted -->. ———— <a href="https://micro-frontends.org/">Micro Frontends</a></p>
+<p><code>微前端是可以用来构建能够让多个团队独立交付项目代码的现代web app 技术，策略以及实践方法</code></p>
+<p><img src="/images/qiankun/verticals-headline.png" alt=""></p>
+<p>微前端架构旨在解决单体应用在一个相对长的时间跨度下，由于参与的人员、团队的增多、变迁，从一个普通应用演变成一个巨石应用(Frontend Monolith)后，随之而来的应用不可维护的问题。这类问题在企业级 Web 应用中尤其常见。</p>
+<p><img src="/images/qiankun/three-teams.png" alt="生动形象的例子"></p>
+<h2 id="微前端的核心思想">微前端的核心思想 <a href="#%e5%be%ae%e5%89%8d%e7%ab%af%e7%9a%84%e6%a0%b8%e5%bf%83%e6%80%9d%e6%83%b3" class="anchor">🔗</a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Be Technology Agnostic(技术不可知主义)
+</span></span><span style="display:flex;"><span>Isolate Team Code(隔离团队之间的代码)
+</span></span><span style="display:flex;"><span>Establish Team Prefixes(建立团队自己的前缀)
+</span></span><span style="display:flex;"><span>Favor Native Browser Features over Custom APIs(原生浏览器标准优先于框架封装的API)
+</span></span><span style="display:flex;"><span>Build a Resilient Site(构建高可用的网络应用)
+</span></span></code></pre></div><h2 id="微前端的价值">微前端的价值 <a href="#%e5%be%ae%e5%89%8d%e7%ab%af%e7%9a%84%e4%bb%b7%e5%80%bc" class="anchor">🔗</a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>技术栈无关
+</span></span><span style="display:flex;"><span>独立开发、独立部署
+</span></span><span style="display:flex;"><span>增量升级
+</span></span><span style="display:flex;"><span>独立运行时
+</span></span></code></pre></div><h2 id="qiankun-乾坤是什么">qiankun (乾坤)是什么？ <a href="#qiankun-%e4%b9%be%e5%9d%a4%e6%98%af%e4%bb%80%e4%b9%88" class="anchor">🔗</a></h2><p><code>In Chinese, qian(乾) means heaven and kun(坤) earth. qiankun is the universe.</code></p>
+<p>乾坤是一个基于 <a href="https://github.com/single-spa/single-spa">single-spa</a> 的微前端实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统。</p>
+<p><code>简单</code>  <code>解耦/技术栈无关</code></p>
+<h3 id="特性">特性 <a href="#%e7%89%b9%e6%80%a7" class="anchor">🔗</a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>基于 single-spa 封装
+</span></span><span style="display:flex;"><span>HTML Entry
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>技术栈无关
+</span></span><span style="display:flex;"><span>样式隔离
+</span></span><span style="display:flex;"><span>JS 沙箱
+</span></span><span style="display:flex;"><span>资源预加载
+</span></span><span style="display:flex;"><span>umi 插件
+</span></span></code></pre></div><h2 id="如何工作的">如何工作的 <a href="#%e5%a6%82%e4%bd%95%e5%b7%a5%e4%bd%9c%e7%9a%84" class="anchor">🔗</a></h2><p><img src="/images/qiankun/master-slave.jpeg" alt="主应用&amp;微应用"></p>
+<h3 id="使用方法">使用方法 <a href="#%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95" class="anchor">🔗</a></h3><p>主应用安装乾坤框架</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yarn add qiankun <span style="color:#75715e"># 或者 npm i qiankun -S</span>
+</span></span></code></pre></div><p>主应用中注册微应用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">registerMicroApps</span>, <span style="color:#a6e22e">start</span>, <span style="color:#a6e22e">loadMicroApp</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;qiankun&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 自动匹配
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">registerMicroApps</span>([
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;react app&#39;</span>, <span style="color:#75715e">// app name registered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">entry</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;//localhost:7100&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">container</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#yourContainer&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">activeRule</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;/yourActiveRule&#39;</span>,
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;vue app&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">entry</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">scripts</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;//localhost:7100/main.js&#39;</span>] },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">container</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#yourContainer2&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">activeRule</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;/yourActiveRule2&#39;</span>,
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">start</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 手动加载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">loadMicroApp</span>({
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;app&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">entry</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;//localhost:7100&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">container</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#yourContainer&#39;</span>,
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>微应用导出生命周期钩子</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * bootstrap 只会在微应用初始化的时候调用一次，下次微应用重新进入时会直接调用 mount 钩子，不会再重复触发 bootstrap。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 通常我们可以在这里做一些全局变量的初始化，比如不会在 unmount 阶段被销毁的应用级别的缓存等。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">bootstrap</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;react app bootstraped&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 应用每次进入都会调用 mount 方法，通常我们在这里触发应用的渲染方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">mount</span>(<span style="color:#a6e22e">props</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ReactDOM</span>.<span style="color:#a6e22e">render</span>(<span style="color:#f92672">&lt;</span><span style="color:#a6e22e">App</span> <span style="color:#f92672">/&gt;</span>, <span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">container</span> <span style="color:#f92672">?</span> <span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;#root&#39;</span>) <span style="color:#f92672">:</span> document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#39;root&#39;</span>));
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 应用每次 切出/卸载 会调用的方法，通常在这里我们会卸载微应用的应用实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">unmount</span>(<span style="color:#a6e22e">props</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ReactDOM</span>.<span style="color:#a6e22e">unmountComponentAtNode</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">container</span> <span style="color:#f92672">?</span> <span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;#root&#39;</span>) <span style="color:#f92672">:</span> document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#39;root&#39;</span>),
+</span></span><span style="display:flex;"><span>  );
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 可选生命周期钩子，仅使用 loadMicroApp 方式加载微应用时生效
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">update</span>(<span style="color:#a6e22e">props</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;update props&#39;</span>, <span style="color:#a6e22e">props</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>微应用暴露出额外的一些信息，修改配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">packageName</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;./package.json&#39;</span>).<span style="color:#a6e22e">name</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">output</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">library</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">packageName</span><span style="color:#e6db74">}</span><span style="color:#e6db74">-[name]`</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">libraryTarget</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;umd&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">jsonpFunction</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`webpackJsonp_</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">packageName</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>,
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><h3 id="实现原理">实现原理 <a href="#%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86" class="anchor">🔗</a></h3><h4 id="加载方式html-entry">加载方式——HTML Entry <a href="#%e5%8a%a0%e8%bd%bd%e6%96%b9%e5%bc%8fhtml-entry" class="anchor">🔗</a></h4><p>qiankun使用独立的处理库<a href="https://github.com/kuitos/import-html-entry#readme">import-html-entry</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">loadApp</span>&lt;<span style="color:#f92672">T</span> <span style="color:#a6e22e">extends</span> <span style="color:#a6e22e">ObjectType</span>&gt;(
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">app</span>: <span style="color:#66d9ef">LoadableApp</span>&lt;<span style="color:#f92672">T</span>&gt;,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">configuration</span>: <span style="color:#66d9ef">FrameworkConfiguration</span> <span style="color:#f92672">=</span> {},
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">lifeCycles?</span>: <span style="color:#66d9ef">FrameworkLifeCycles</span>&lt;<span style="color:#f92672">T</span>&gt;,
+</span></span><span style="display:flex;"><span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">Promise</span>&lt;<span style="color:#f92672">ParcelConfigObjectGetter</span>&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">entry</span>, <span style="color:#a6e22e">name</span>: <span style="color:#66d9ef">appName</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">app</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">appInstanceId</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">genAppInstanceIdByName</span>(<span style="color:#a6e22e">appName</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">markName</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">`[qiankun] App </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">appInstanceId</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> Loading`</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">NODE_ENV</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;development&#39;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">performanceMark</span>(<span style="color:#a6e22e">markName</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">singular</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sandbox</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">excludeAssetFilter</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">globalContext</span> <span style="color:#f92672">=</span> window,
+</span></span><span style="display:flex;"><span>    ...<span style="color:#a6e22e">importEntryOpts</span>
+</span></span><span style="display:flex;"><span>  } <span style="color:#f92672">=</span> <span style="color:#a6e22e">configuration</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// get the entry html content and script executor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  1. template 处理后的html
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  2. execScripts 执行脚本
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  3. assetPublicPath 公共路径
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">template</span>, <span style="color:#a6e22e">execScripts</span>, <span style="color:#a6e22e">assetPublicPath</span> } <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">importEntry</span>(<span style="color:#a6e22e">entry</span>, <span style="color:#a6e22e">importEntryOpts</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">///...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h4 id="js沙箱实现方式">JS沙箱实现方式 <a href="#js%e6%b2%99%e7%ae%b1%e5%ae%9e%e7%8e%b0%e6%96%b9%e5%bc%8f" class="anchor">🔗</a></h4><p>qiankun中采取了两种方式来支持JS沙箱</p>
+<ol>
+<li>不支持Proxy的，则简单的讲window备份一个，使用完后恢复</li>
+<li>支持Proxy的，使用Proxy后的window作为全局对象，get从window上获取，set不往window上设置</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">createSandboxContainer</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">appName</span>: <span style="color:#66d9ef">string</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">elementGetter</span><span style="color:#f92672">:</span> () <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">HTMLElement</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">ShadowRoot</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scopedCSS</span>: <span style="color:#66d9ef">boolean</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">useLooseSandbox?</span>: <span style="color:#66d9ef">boolean</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">excludeAssetFilter</span><span style="color:#f92672">?:</span> (<span style="color:#a6e22e">url</span>: <span style="color:#66d9ef">string</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">boolean</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">globalContext?</span>: <span style="color:#66d9ef">typeof</span> window,
+</span></span><span style="display:flex;"><span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">sandbox</span>: <span style="color:#66d9ef">SandBox</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (window.<span style="color:#a6e22e">Proxy</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sandbox</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useLooseSandbox</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">LegacySandbox</span>(<span style="color:#a6e22e">appName</span>, <span style="color:#a6e22e">globalContext</span>) <span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">ProxySandbox</span>(<span style="color:#a6e22e">appName</span>, <span style="color:#a6e22e">globalContext</span>);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sandbox</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">SnapshotSandbox</span>(<span style="color:#a6e22e">appName</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>通过Snapshot方式实现沙箱</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SnapshotSandbox</span> <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">SandBox</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">proxy</span>: <span style="color:#66d9ef">WindowProxy</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span>: <span style="color:#66d9ef">string</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">SandBoxType</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">sandboxRunning</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">windowSnapshot</span><span style="color:#f92672">!:</span> <span style="color:#a6e22e">Window</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">modifyPropsMap</span>: <span style="color:#66d9ef">Record</span>&lt;<span style="color:#f92672">any</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">any</span>&gt; <span style="color:#f92672">=</span> {};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">constructor</span>(<span style="color:#a6e22e">name</span>: <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">name</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">proxy</span> <span style="color:#f92672">=</span> window;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#66d9ef">type</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">SandBoxType</span>.<span style="color:#a6e22e">Snapshot</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">active() {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 记录当前快照
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">windowSnapshot</span> <span style="color:#f92672">=</span> {} <span style="color:#66d9ef">as</span> <span style="color:#a6e22e">Window</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">iter</span>(window, (<span style="color:#a6e22e">prop</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">windowSnapshot</span>[<span style="color:#a6e22e">prop</span>] <span style="color:#f92672">=</span> window[<span style="color:#a6e22e">prop</span>];
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 恢复之前的变更
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Object.<span style="color:#a6e22e">keys</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">modifyPropsMap</span>).<span style="color:#a6e22e">forEach</span>((<span style="color:#a6e22e">p</span>: <span style="color:#66d9ef">any</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>      window[<span style="color:#a6e22e">p</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">modifyPropsMap</span>[<span style="color:#a6e22e">p</span>];
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">sandboxRunning</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">inactive() {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">modifyPropsMap</span> <span style="color:#f92672">=</span> {};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">iter</span>(window, (<span style="color:#a6e22e">prop</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (window[<span style="color:#a6e22e">prop</span>] <span style="color:#f92672">!==</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">windowSnapshot</span>[<span style="color:#a6e22e">prop</span>]) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 记录变更，恢复环境
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">modifyPropsMap</span>[<span style="color:#a6e22e">prop</span>] <span style="color:#f92672">=</span> window[<span style="color:#a6e22e">prop</span>];
+</span></span><span style="display:flex;"><span>        window[<span style="color:#a6e22e">prop</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">windowSnapshot</span>[<span style="color:#a6e22e">prop</span>];
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">NODE_ENV</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;development&#39;</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">`[qiankun:sandbox] </span><span style="color:#e6db74">${</span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> origin window restore...`</span>, Object.<span style="color:#a6e22e">keys</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">modifyPropsMap</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">sandboxRunning</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>使用snapshot创建沙箱环境的基本原理为，使用之前对当前上下文做快照，使用完成之后再从快照恢复上下文。因此，这种方式创建的沙箱其实在生效的过程中，所有对于上下文的操作其实都是在window上进行的，也正是这种原理，决定了使用这种方式创建的沙箱，同时间只能存在一个激活的，不能同时开启，映射到微前端中也就意味着同时只能激活一个微应用。</p>
+<p>通过Proxy实现JS沙箱</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-TYPESCRIPT" data-lang="TYPESCRIPT"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProxySandbox</span> <span style="color:#66d9ef">implements</span> <span style="color:#a6e22e">SandBox</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">proxy</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Proxy</span>(<span style="color:#a6e22e">fakeWindow</span>, {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// set时给fakeWindow设置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">set</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">target</span>: <span style="color:#66d9ef">FakeWindow</span>, <span style="color:#a6e22e">p</span>: <span style="color:#66d9ef">PropertyKey</span>, <span style="color:#a6e22e">value</span>: <span style="color:#66d9ef">any</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">boolean</span> <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">sandboxRunning</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">registerRunningApp</span>(<span style="color:#a6e22e">name</span>, <span style="color:#a6e22e">proxy</span>);
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">// We must kept its description while the property existed in globalContext before
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">target</span>.<span style="color:#a6e22e">hasOwnProperty</span>(<span style="color:#a6e22e">p</span>) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">globalContext</span>.<span style="color:#a6e22e">hasOwnProperty</span>(<span style="color:#a6e22e">p</span>)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">descriptor</span> <span style="color:#f92672">=</span> Object.<span style="color:#a6e22e">getOwnPropertyDescriptor</span>(<span style="color:#a6e22e">globalContext</span>, <span style="color:#a6e22e">p</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">writable</span>, <span style="color:#a6e22e">configurable</span>, <span style="color:#a6e22e">enumerable</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">descriptor</span><span style="color:#f92672">!</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">writable</span>) {
+</span></span><span style="display:flex;"><span>              Object.<span style="color:#a6e22e">defineProperty</span>(<span style="color:#a6e22e">target</span>, <span style="color:#a6e22e">p</span>, {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">configurable</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">enumerable</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">writable</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">value</span>,
+</span></span><span style="display:flex;"><span>              });
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>          } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// @ts-ignore
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">target</span>[<span style="color:#a6e22e">p</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">value</span>;
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">variableWhiteList</span>.<span style="color:#a6e22e">indexOf</span>(<span style="color:#a6e22e">p</span>) <span style="color:#f92672">!==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// @ts-ignore
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">globalContext</span>[<span style="color:#a6e22e">p</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">value</span>;
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">updatedValueSet</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">p</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">latestSetProp</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">p</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">NODE_ENV</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;development&#39;</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">warn</span>(<span style="color:#e6db74">`[qiankun] Set window.</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">toString</span>()<span style="color:#e6db74">}</span><span style="color:#e6db74"> while sandbox destroyed or inactive in </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">!`</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 在 strict-mode 下，Proxy 的 handler.set 返回 false 会抛出 TypeError，在沙箱卸载的情况下应该忽略错误
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// get时先从FakeWindow上获取，如果获取不到则去Window上获取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">get</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">target</span>: <span style="color:#66d9ef">FakeWindow</span>, <span style="color:#a6e22e">p</span>: <span style="color:#66d9ef">PropertyKey</span>)<span style="color:#f92672">:</span> <span style="color:#66d9ef">any</span> <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">registerRunningApp</span>(<span style="color:#a6e22e">name</span>, <span style="color:#a6e22e">proxy</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">Symbol</span>.<span style="color:#a6e22e">unscopables</span>) <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">unscopables</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// avoid who using window.window or window.self to escape the sandbox environment to touch the really window
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// see https://github.com/eligrey/FileSaver.js/blob/master/src/FileSaver.js#L13
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;window&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;self&#39;</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">proxy</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// hijack globalWindow accessing with globalThis keyword
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;globalThis&#39;</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">proxy</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;top&#39;</span> <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;parent&#39;</span> <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>          (<span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">NODE_ENV</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;test&#39;</span> <span style="color:#f92672">&amp;&amp;</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;mockTop&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;mockSafariTop&#39;</span>))
+</span></span><span style="display:flex;"><span>        ) {
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">// if your master app in an iframe context, allow these props escape the sandbox
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">globalContext</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">globalContext</span>.<span style="color:#a6e22e">parent</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">proxy</span>;
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> (<span style="color:#a6e22e">globalContext</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">any</span>)[<span style="color:#a6e22e">p</span>];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// proxy.hasOwnProperty would invoke getter firstly, then its value represented as globalContext.hasOwnProperty
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;hasOwnProperty&#39;</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hasOwnProperty</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;document&#39;</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> document;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;eval&#39;</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> eval;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">propertiesWithGetter</span>.<span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">p</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">?</span> (<span style="color:#a6e22e">globalContext</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">any</span>)[<span style="color:#a6e22e">p</span>]
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">:</span> <span style="color:#a6e22e">p</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">target</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">?</span> (<span style="color:#a6e22e">target</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">any</span>)[<span style="color:#a6e22e">p</span>]
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">:</span> (<span style="color:#a6e22e">globalContext</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">any</span>)[<span style="color:#a6e22e">p</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* Some dom api must be bound to native window, otherwise it would cause exception like &#39;TypeError: Failed to execute &#39;fetch&#39; on &#39;Window&#39;: Illegal invocation&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">           See this code:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">             const proxy = new Proxy(window, {});
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">             const proxyFetch = fetch.bind(proxy);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">             proxyFetch(&#39;https://qiankun.com&#39;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">boundTarget</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useNativeWindowForBindingsProps</span>.<span style="color:#66d9ef">get</span>(<span style="color:#a6e22e">p</span>) <span style="color:#f92672">?</span> <span style="color:#a6e22e">nativeGlobal</span> : <span style="color:#66d9ef">globalContext</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">getTargetValue</span>(<span style="color:#a6e22e">boundTarget</span>, <span style="color:#a6e22e">value</span>);
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">proxy</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">proxy</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h4 id="样式隔离">样式隔离 <a href="#%e6%a0%b7%e5%bc%8f%e9%9a%94%e7%a6%bb" class="anchor">🔗</a></h4><p>创建appWrapper时做了特殊处理</p>
+<ol>
+<li>使用strictStyleIsolation使用shadowDOM</li>
+<li>使用experimentalStyleIsolation，在appElement上添加前缀遍历所有css添加前缀</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">createElement</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">appContent</span>: <span style="color:#66d9ef">string</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">strictStyleIsolation</span>: <span style="color:#66d9ef">boolean</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">scopedCSS</span>: <span style="color:#66d9ef">boolean</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">appInstanceId</span>: <span style="color:#66d9ef">string</span>,
+</span></span><span style="display:flex;"><span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">HTMLElement</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">containerElement</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#39;div&#39;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">containerElement</span>.<span style="color:#a6e22e">innerHTML</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">appContent</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// appContent always wrapped with a singular div
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">appElement</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">containerElement</span>.<span style="color:#a6e22e">firstChild</span> <span style="color:#66d9ef">as</span> <span style="color:#a6e22e">HTMLElement</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">strictStyleIsolation</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">supportShadowDOM</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">warn</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;[qiankun]: As current browser not support shadow dom, your strictStyleIsolation configuration will be ignored!&#39;</span>,
+</span></span><span style="display:flex;"><span>      );
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">innerHTML</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">appElement</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">appElement</span>.<span style="color:#a6e22e">innerHTML</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">shadow</span>: <span style="color:#66d9ef">ShadowRoot</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">appElement</span>.<span style="color:#a6e22e">attachShadow</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">shadow</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">appElement</span>.<span style="color:#a6e22e">attachShadow</span>({ <span style="color:#a6e22e">mode</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;open&#39;</span> });
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// createShadowRoot was proposed in initial spec, which has then been deprecated
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">shadow</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">appElement</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">any</span>).<span style="color:#a6e22e">createShadowRoot</span>();
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">shadow</span>.<span style="color:#a6e22e">innerHTML</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">innerHTML</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">scopedCSS</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">attr</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">appElement</span>.<span style="color:#a6e22e">getAttribute</span>(<span style="color:#a6e22e">css</span>.<span style="color:#a6e22e">QiankunCSSRewriteAttr</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">attr</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">appElement</span>.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#a6e22e">css</span>.<span style="color:#a6e22e">QiankunCSSRewriteAttr</span>, <span style="color:#a6e22e">appInstanceId</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">styleNodes</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">appElement</span>.<span style="color:#a6e22e">querySelectorAll</span>(<span style="color:#e6db74">&#39;style&#39;</span>) <span style="color:#f92672">||</span> [];
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">styleNodes</span>, (<span style="color:#a6e22e">stylesheetElement</span>: <span style="color:#66d9ef">HTMLStyleElement</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">css</span>.<span style="color:#a6e22e">process</span>(<span style="color:#a6e22e">appElement</span><span style="color:#f92672">!</span>, <span style="color:#a6e22e">stylesheetElement</span>, <span style="color:#a6e22e">appInstanceId</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">appElement</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="demo演示">Demo演示 <a href="#demo%e6%bc%94%e7%a4%ba" class="anchor">🔗</a></h2><p><a href="https://github.com/TheScenery/micro-frontend-basement">Qiankun微前端演示项目</a></p>
+<p><img src="/images/qiankun/qiankunDemo.png" alt="QiankunDemo"></p>
+
+    </div>
+
+    
+</section>
+
+
+            </div>
+            <div class="side">
+                
+                    <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%8E%AB%E5%90%8D%E5%85%B6%E5%A6%99%E7%9A%84%E5%89%8D%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B4%A9%E6%BA%83/">记一次莫名其妙的前端页面崩溃</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%BE%AE%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E4%B9%8Bqiankun%E5%88%9D%E6%8E%A2/">微前端框架之qiankun初探</a>
+            </li>
+        
+            <li>
+                <a href="/posts/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AAgo-package/">如何发布一个go package</a>
+            </li>
+        
+            <li>
+                <a href="/posts/javascript%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">JavaScript内存泄漏</a>
+            </li>
+        
+            <li>
+                <a href="/posts/css%E5%8A%A8%E7%94%BB%E4%B9%8Btransition%E5%92%8Canimation/">css动画之transition和animation</a>
+            </li>
+        
+    </ul>
+</div>
+
+                
+                <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA">博客搭建(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%AD%A6%E4%B9%A0">学习(3)</a>
+            </li>
+        
+    </ul>
+</div>
+
+                <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/blog">blog (2)</a>
+            </li>
+        
+    </ul>
+</div>
+
+            </div>
+        </main>
+        <footer class="footer">
+    <div class="footer-row">
+        
+            
+            
+                <a class="footer-item" href="https://thescenery.github.io/posts/index.xml">
+                    Feed of Posts
+                    <i class="icofont-rss"></i>
+                </a>
+            
+        
+
+        
+            
+            
+        
+    </div>
+
+    
+</footer>
+
+    </body>
+</html>

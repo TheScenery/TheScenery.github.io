@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on TheScenery&#39;s Blog</title>
+    <link>https://thescenery.github.io/tags/blog/</link>
+    <description>Recent content in Blog on TheScenery&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 26 May 2018 14:05:46 +0000</lastBuildDate><atom:link href="https://thescenery.github.io/tags/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Blog Cookbook</title>
+      <link>https://thescenery.github.io/posts/blog-cookbook/</link>
+      <pubDate>Sat, 26 May 2018 14:05:46 +0000</pubDate>
+      
+      <guid>https://thescenery.github.io/posts/blog-cookbook/</guid>
+      <description>&lt;p&gt;为了防止以后忘记怎么使用，很有必要在这里将基础步骤都记录下来&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;原材料&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   Node.js
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   Git
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   Hexo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;
+&lt;p&gt;基础环境配置&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安装&lt;a href=&#34;https://nodejs.org/en/download/&#34;&gt;Node&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;安装&lt;a href=&#34;https://git-scm.com/downloads&#34;&gt;Git&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;安装 &lt;code&gt;hexo&lt;/code&gt; (建议全局安装，使用以下命令), &lt;a href=&#34;https://hexo.io/docs/&#34;&gt;Hexo文档以及简介。&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    npm install -g hexo-cli
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;个性化定制&lt;/p&gt;
+&lt;p&gt;Theme: &lt;a href=&#34;https://material.viosey.com/&#34;&gt;material&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;基础常用命令&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;hexo new [layout] title&lt;/code&gt; 生成新的markdown源文件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hexo generate&lt;/code&gt; 从原始文件生成静态页面&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hexo server&lt;/code&gt; 启动一个简单的本地server，可以方便的查看效果&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hexo depoly&lt;/code&gt; 将生成好的静态页面上传&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;所有的命令都可以简写，直接使用首字母就可以了。 例如： &lt;code&gt;hexo n [layout] title&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一般流程&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;生成新文章。 &lt;code&gt;hexo n&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;生成静态页面。&lt;code&gt;hexo g&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;启动个server看看效果。 &lt;code&gt;hexo server&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;觉得哪不爽了再改改， 重新生成下，看看效果。&lt;/li&gt;
+&lt;li&gt;觉得还不错了，就可以发布了。 &lt;code&gt;hexo d&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Deploy相关&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置下站点的&lt;code&gt;_config.yml&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-yml&#34; data-lang=&#34;yml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;deploy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;type&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;repo&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;(repo url)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;安装个push到git的小工具 &lt;code&gt;npm install hexo-deployer-git --save&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The First Thing</title>
+      <link>https://thescenery.github.io/posts/the-first-thing/</link>
+      <pubDate>Sat, 26 May 2018 12:18:25 +0000</pubDate>
+      
+      <guid>https://thescenery.github.io/posts/the-first-thing/</guid>
+      <description>&lt;p&gt;时隔一段时间重新整理博客，发现之前的原始文件由于没有上传的原因已经没办法重新找回了，凉凉o(╥﹏╥)o
+所以这次重新开始前先在这里提醒一下， 如果使用hexo生成博客文章，一定要记得将原始的博客文章也&lt;!-- raw HTML omitted --&gt;一并上传或者找个其他的地方备份!!!&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
